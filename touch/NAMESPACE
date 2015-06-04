@@ -2,4 +2,4 @@
 
 importFrom(stringr, str_trim)
 
-export(cmbd, drgFlag)
+export(cmbd)

@@ -1,0 +1,8 @@
+2015-06-04  Jun Yan  <jun.yan@uconn.edu>
+
+	* Following Rob's suggestions, icd9 codes 296.2, 296.3, and
+	296.5 were moved from Psychosis to Depression. The original
+	cmbd.csv extracted from arhq website was renamed to cmbd-arhq.csv.
+	The sysdata.rda has been regenerated with the updated cmbd.csv.
+	A better solution would be to keep several versions of the
+	comobidity definitions, and the users can select which one to use.
