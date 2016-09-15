@@ -1,6 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^Makefile$
+^reference$
+^dev$
+^test$
+
 ^README.md$
 ^NEWS.md$
-^reference$
