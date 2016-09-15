@@ -1,5 +1,0 @@
-## exportPattern("^[[:alpha:]]+")
-
-importFrom(stringr, str_trim)
-
-export(cmbd)
