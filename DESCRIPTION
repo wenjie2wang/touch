@@ -20,6 +20,6 @@ Imports:
 Depends:
     R (>= 3.2.3)
 License: GPL (>= 3)
-URL: https://github.com/wenjie2wang/touch
-BugReports: https://github.com/wenjie2wang/touch/issue
+URL: https://github.com/LiYanStat/touch
+BugReports: https://github.com/LiYanStat/touch/issue
 RoxygenNote: 5.0.1
