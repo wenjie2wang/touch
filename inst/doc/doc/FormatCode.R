@@ -90,45 +90,67 @@ ICD.code <- str_replace_all(ICD.code, pattern='\"', replacement="")
 
 drg <- as.list(DRG.code)
 names(drg) <- DRG.class
+icd <- as.list(ICD.code)
+names(icd) <- ICD.class
+
+MatchCode <- function(comb, code) {
+  # match icd or drg comb with icd or drg code
+  # args:
+  #  comb: icd.comb or drg.comb
+  #  code: icd or drg code
+  seprt <- subset(str_locate(comb, pattern="="), select=start)
+  cmbd.name <- str_trim(substr(comb, start=1, stop=seprt-1))
+  cmbd.comb <- str_trim(substr(comb, start=seprt+1, stop=nchar(comb)))
+  
+  cmbd <- list()
+  for(i in 1:length(cmbd.comb)) {
+    m <- str_trim(str_split_fixed(cmbd.comb[i], pattern=",", 
+                                  n=str_count(cmbd.comb[i], pattern=',')+1))
+    cmbd[[i]] <- m
+  }
+  names(cmbd) <- cmbd.name
+  
+  for(i in 1:length(cmbd)) {
+    cmbd.i <- ""
+    for(j in 1:length(cmbd[[i]])) {
+      num <- which(names(code)==cmbd[[i]][j])
+      if(cmbd.i == "") {
+        cmbd.i <- str_c(cmbd.i, code[[num]], sep="")
+      } else {
+        cmbd.i <- str_c(cmbd.i, code[[num]], sep=", ")
+      }
+    }
+    cmbd[[i]] <- cmbd.i
+  }
+  cmbd
+}
+
+MatchLabel <- function(label, code) {
+  seprt <- subset(str_locate(label, pattern="="), select=start)
+  label.name <- str_trim(substr(label, start=1, stop=seprt-1))
+  label.annote <- str_trim(substr(label, start=seprt+1, stop=nchar(label)))
+  
+  f.drg <- NULL
+  for(i in 1:length(code)) {  
+    num <- which(label.name == names(code[i]))
+    f.drg <- c(f.drg, paste0(i,". ", label.annote[num], ": ", code[[i]]))
+  }
+  str_replace_all(f.drg, pattern="'", replacement="")
+}
 
 # according to DRG_combination.txt, generate a final drg.txt like the txt in Git
-drg.comb <- readLines('C:/Users/Leonhard/Desktop/touch/DRG_combination.txt')
-seprt <- subset(str_locate(drg.comb, pattern="="), select=start)
-cmbd.name <- str_trim(substr(drg.comb, start=1, stop=seprt-1))
-cmbd.comb <- str_trim(substr(drg.comb, start=seprt+1, stop=nchar(drg.comb)))
+drg.comb <- readLines('C:/Users/Leonhard/Desktop/touch/drg-combination.txt')
+cmbd.drg <- MatchCode(drg.comb, drg)
 
-cmbd.drg <- list()
-for(i in 1:length(cmbd.comb)) {
-  m <- str_trim(str_split_fixed(cmbd.comb[i], pattern=",", 
-                  n=str_count(cmbd.comb[i], pattern=',')+1))
-  cmbd.drg[[i]] <- m
-}
-names(cmbd.drg) <- cmbd.name
-
-for(i in 1:length(cmbd.drg)) {
-  cmbd.i <- ""
-  for(j in 1:length(cmbd.drg[[i]])) {
-    num <- which(names(drg)==cmbd.drg[[i]][j])
-    if(cmbd.i == "") {
-      cmbd.i <- str_c(cmbd.i, drg[[num]], sep="")
-    } else {
-      cmbd.i <- str_c(cmbd.i, drg[[num]], sep=", ")
-    }
-  }
-  cmbd.drg[[i]] <- cmbd.i
-}
+# according to icd_combination.txt, generate a final drg.txt like the txt in Git
+icd.comb <- readLines('C:/Users/Leonhard/Desktop/touch/icd-combination.txt')
+cmbd.icd <- MatchCode(icd.comb, icd)
 
 # change abbreviation of names to labels
 label <- readLines('C:/Users/Leonhard/Desktop/touch/labels.txt')
-seprt <- subset(str_locate(label, pattern="="), select=start)
-label.name <- str_trim(substr(label, start=1, stop=seprt-1))
-label.annote <- str_trim(substr(label, start=seprt+1, stop=nchar(label)))
 
-f.drg <- NULL
-for(i in 1:length(cmbd.drg)) {  
-  num <- which(label.name == names(cmbd.drg[i]))
-  f.drg <- c(f.drg, paste0(i,". ", label.annote[num], ": ", cmbd.drg[[i]]))
-}
+f.drg <- MatchLabel(label, cmbd.drg)
+f.icd <- MatchLabel(label, cmbd.icd)
 
-f.drg <- str_replace_all(f.drg, pattern="'", replacement="")
 cat(f.drg, file="drg.txt", sep="\n")
+cat(f.icd, file="icd.txt", sep="\n")
