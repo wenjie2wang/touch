@@ -1,0 +1,29 @@
+1. Congestive heart failure: 001-002, 215-238, 242-251, 253-254, 258-262, 265, 280-293, 296-298, 302-303, 306-313
+2. Valvular disease: 001-002, 215-238, 242-251, 253-254, 258-262, 265, 280-293, 296-298, 302-303, 306-313
+3. Pulmonary circulation disease: 001-002, 215-238, 242-251, 253-254, 258-262, 265, 280-293, 296-298, 302-303, 306-313, 190-192, 202-203
+4. Peripheral vascular disease: 299-301
+5. Hypertension (combine uncomplicated and complicated): 079, 305, 077, 078, 304, 001-002, 215-238, 242-251, 253-254, 258-262, 265, 280-293, 296-298, 302-303, 306-313, 652, 656-661, 673-675, 682-700
+6. Paralysis: 020-022, 034-039, 064-072
+7. Other neurological disorders: 020-042, 052-103
+8. Chronic pulmonary disease: 190-192, 202-203
+9. Diabetes without chronic complications: 637-639
+10. Diabetes with chronic complications: 637-639
+11. Hypothyroidism: 625-627, 643-645
+12. Renal failure: 652, 682-685, 652, 656-661, 673-675, 682-700
+13. Liver disease: 420-425, 432-434, 441-446
+14. Peptic ulcer Disease x bleeding: 377-384
+15. Acquired immune deficiency syndrome: 969-970, 974-977
+16. Lymphoma: 820-830, 834-849
+17. Metastatic cancer: 054, 055, 146-148, 180-182, 374-376, 435-437, 542-544, 582-585, 597-599, 656-658, 686-688, 715-716, 722-724, 736-741, 754-756, 826-830, 843-849
+18. Solid tumor w/out metastasis: 054, 055, 146-148, 180-182, 374-376, 435-437, 542-544, 582-585, 597-599, 656-658, 686-688, 715-716, 722-724, 736-741, 754-756, 826-830, 843-849
+19. Rheumatoid arthritis/collagen vas: 545-547
+20. Coagulopthy: 813
+21. Obesity: 640-641, 619-621
+22. Weight loss: 640-641
+23. Fluid and electrolyte disorders: 640-641
+24. Chronic blood loss anemia: 808-812
+25. Deficiency Anemias: 808-812
+26. Alcohol abuse: 894-897
+27. Drug abuse: 894-897
+28. Psychoses: 885
+29. Depression: 881
