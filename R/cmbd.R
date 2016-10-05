@@ -27,6 +27,7 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
   if (needClean) icd <- icd9Clean(icd)
   if (needPrep) icd <- icd9Prep(icd)
   n <- nrow(icd)
+  icd <- icd[, 2:ncol(icd)]
   output <- sapply(1:length(cmbdFuns),
                    function(i) {
                      score <- matrix(cmbdFuns[[i]](icd), nrow=n)
@@ -38,6 +39,7 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
     flag <- drgFlag(drg)
     output <- output * (!flag)
   }
+  colnames(output) <- names(cmbdFuns)
   output
 }
 
@@ -65,7 +67,7 @@ chibirInfection <- function(icd, needClean=FALSE, needPrep=FALSE) {
 }
 
 icd9Clean <- function(input) {
-  output <- str_trim(input)
+  output <- trimws(input)
   nc <- nchar(output)
   output <- ifelse(nc == 3, paste(output, "00", sep=""), output)
   output <- ifelse(nc == 4, paste(output, "0",  sep=""), output)
@@ -79,7 +81,7 @@ icd9Prep <- function(input) {
   input <- sub("^E", "11", input)
   input <- sub("^V", "12", input)
   output <- matrix(as.numeric(input) / 100, nrow=nrow(input))
-  dimnames(output) <- dimnames(input)
+  dimnames(output) <- dimnames(input)  
   output
 }
 

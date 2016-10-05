@@ -1,4 +1,4 @@
-.icd9tab <- read.table("cmbd.csv", sep=":", as.is=TRUE)
+.icd9tab <- read.table("icd.txt", sep=":", as.is=TRUE)
 .drg29tab <- read.table("drg.txt", sep=":", as.is=TRUE)
 
 source("../../R/cmbd.R")
@@ -16,8 +16,7 @@ drgFuns <- sapply(1:nrow(.drg29tab),
                   )
 
 
-save(.icd9tab, .drg29tab,
-     cmbdFuns, drgFuns,
+save(cmbdFuns, drgFuns,
      file='sysdata.rda', compress=TRUE)
 ## resaveRdafile('sysdata.rda')
 
