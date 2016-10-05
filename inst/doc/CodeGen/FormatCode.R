@@ -206,5 +206,5 @@ cmbd.icd <- MatchCode(icd.comb, icd)
 f.drg <- Matchnames(cmbd.drg)
 f.icd <- Matchnames(cmbd.icd)
 
-cat(f.drg, file="drg.txt", sep="\n")
-cat(f.icd, file="icd.txt", sep="\n")
+cat(f.drg, file="../drg.txt", sep="\n")
+cat(f.icd, file="../icd.txt", sep="\n")
