@@ -1,3 +1,18 @@
+The cmbdGen.R script uses code table to generate functions
+to be stored in sysdata.rda.
+
+Input:  icd.txt, drg.txt
+Output: sysdata.rda
+
+
+The input files icd.txt and drg.txt are generated from
+CodeGen/FormatCode.R
+
+Input : sas format code, combination ....
+Output: icd.txt, drg.txt
+
+
+
 The cmbd.csv file contains the updated icd9 coding from
 Quan et. al. (2005), where
 ``major depressive disorder, single episode (ICD-9-CM: 296.2),
