@@ -2,13 +2,12 @@ Package: touch
 Title: Tools Of Utilization and Cost in Healthcare
 Version: 0.1-3.9000
 Date: 2016-10-06
-Author@R: c(
+Authors@R: c(
     person(given = "Yan", family = "Li",
-           email = "yan.4.li@uconn.edu"
+           email = "yan.4.li@uconn.edu",
            role = c("aut", "cre")),
-    person(given = "Jun", family = "Yan", role = "aut"),
-    person(given = "Robert", family = "Aseltine", role = "ctb"),
-    person(given = "Wenjie", family = "Wang", role = "ctb")
+    person(given = "Wenjie", family = "Wang", role = "ctb"),
+    person(given = "Jun", family = "Yan", role = "aut")
     )
 Description: Tools of unilization and cost in healthcare is an R implementation
     of the software tools developed in the H-CUP (Healthcare Cost and
@@ -17,11 +16,8 @@ Description: Tools of unilization and cost in healthcare is an R implementation
     measures.
 Imports:
     stringr
-Depends:
-    R (>= 3.2.3)
 License: GPL (>= 3)
-Maintainer: Yan Li <yan.4.li@uconn.edu>
-LazyData: true
 URL: https://github.com/LiYanStat/touch
 BugReports: https://github.com/LiYanStat/touch/issue
+Repository: CRAN
 RoxygenNote: 5.0.1
