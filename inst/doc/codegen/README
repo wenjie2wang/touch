@@ -13,4 +13,6 @@ the 40 groups of ICD-9 coding and 24 groups of DRG coding
 at arhq website and then combines them to generate DRG coding
 and ICD-9 coding for cmbdGen.R. 
 
-drg.txt contains drg coding and icd.txt contains icd coding.
+input : sas-url.txt, drg-combination.txt, icd-combination.txt
+
+output : icd.txt, drg.txt
