@@ -8,19 +8,7 @@ Output: sysdata.rda
 The input files icd.txt and drg.txt are generated from
 CodeGen/FormatCode.R
 
-Input : sas format code, combination ....
+Input : http url of sas format code stored in sas-url.txt, 
+        icd-combination.txt, drg-combination.txt
 Output: icd.txt, drg.txt
 
-
-
-The cmbd.csv file contains the updated icd9 coding from
-Quan et. al. (2005), where
-``major depressive disorder, single episode (ICD-9-CM: 296.2),
-major depressive disorder, recurrent episodes (296.3), and
-bipolar effective disorder, depressed (296.5) were all reclassified
-into depression whereas these were classified under "psychosis"
-in the original Elixhauser algorithm.''
-
-
-The cmbd-arhq.csv file contains the icd9 coding extracted
-from the latest comobidity software at arhq website.
