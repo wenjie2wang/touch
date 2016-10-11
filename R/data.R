@@ -1,3 +1,5 @@
+##' Sample Data of Diagnosis Code
+##'
 ##' A data frame of diagnosis code with variates named
 ##' \code{drg} and \code{dx1}, \code{dx2}, ..., \code{dx10},
 ##' where
@@ -15,4 +17,4 @@
 ##' data(dxDat)
 ##' drg <- dxDat$drg
 ##' icd <- dxDat[, - 1L]
-NULL
+"dxDat"
