@@ -12,7 +12,7 @@
 ##' @format  A data frame with 1000 rows and 11 variables.
 ##' @keywords datasets
 ##' @references
-##' @source ../data/
+##' @source \url{https://github.com/LiYanStat/touch/blob/master/data/dxDat.rda}
 ##' @examples
 ##' data(dxDat)
 ##' drg <- dxDat$drg
