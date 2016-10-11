@@ -20,7 +20,7 @@
 ##'
 ##' data(dxDat)
 ##' drg <- dxDat$drg
-##' icd <- dxDat[, 2:ncol(dxDat)]
+##' icd <- dxDat[, -1L]
 ##' output <- cmbd(icd, drg=drg)
 ##' @importFrom stringr str_trim
 ##' @export cmbd
