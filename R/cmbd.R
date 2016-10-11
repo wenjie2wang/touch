@@ -18,8 +18,10 @@
 ##' @keywords manipulation
 ##' @examples
 ##'
-##' data(icd9sample)
-##' output <- cmbd(icd9sample)
+##' data(dxDat)
+##' drg <- dxDat$drg
+##' icd <- dxDat[, 2:ncol(dxDat)]
+##' output <- cmbd(icd, drg=drg)
 ##' @importFrom stringr str_trim
 ##' @export cmbd
 cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
