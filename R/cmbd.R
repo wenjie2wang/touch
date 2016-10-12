@@ -29,20 +29,23 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
   if (needClean) icd <- icd9Clean(icd)
   if (needPrep) icd <- icd9Prep(icd)
   n <- nrow(icd)
-  icd <- icd[, 2:ncol(icd)]
+  icd <- icd[, -1L]
   output <- sapply(1:length(cmbdFuns),
                    function(i) {
                      score <- matrix(cmbdFuns[[i]](icd), nrow=n)
                      score <- rowSums(score, na.rm=TRUE)
                      as.integer(score > 0)
                    })
+  colnames(output) <- names(cmbdFuns)
+  output <- data.frame(output)
+  output$DM <- (1 - (output$DMCX > 0))*output$DM
+  output$TUMOR <- (1 - (output$METS > 0))*output$TUMOR
   if (!is.null(drg)) {## check drg flags
     stopifnot(nrow(icd) == length(drg))
     flag <- drgFlag(drg)
     output <- output * (!flag)
   }
-  colnames(output) <- names(cmbdFuns)
-  output
+  
 }
 
 drgFlag <- function(drg) {
