@@ -1,7 +1,7 @@
 The cmbdGen.R script uses code table to generate functions
 to be stored in sysdata.rda.
 
-Input:  icd.txt, drg.txt
+Input:  icd.txt, drg.txt, htncx_renlfail.txt
 Output: sysdata.rda
 
 
