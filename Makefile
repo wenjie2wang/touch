@@ -1,10 +1,9 @@
 pkg = touch
 
-Rpkg: Rd build
+Rpkg: build
 	make check
-#	make INSTALL
 
-Rd:
+Rd: R/
 	Rscript -e "library(methods); devtools::document();" # roxygen2::roxygenise();"
 
 build: Rd
@@ -17,4 +16,4 @@ INSTALL: $(pkg)_*.tar.gz
 	R CMD INSTALL --build $(pkg)_*.tar.gz
 
 clean:
-	rm -rf *~ */*~ */*.Rd *.Rhistroy NAMESPACE *.tar.gz *.Rcheck/ .\#*
+	rm -rf *~ */*~ *.Rhistroy *.tar.gz *.Rcheck/ .\#*
