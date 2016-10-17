@@ -38,8 +38,9 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
                    })
   colnames(output) <- names(cmbdFuns)
   output <- data.frame(output)
-  icd.s <- output[, -(1:30)] ## record the 10 groups for HTNCX
-  output <- output[, 1:30] ## keep the 30 comorbidities
+  htn.complicated <- output[, -(1:30)] ## store 10 temporary groups for HTNCX
+  output <- output[, 1:30] ## store the 30 comorbidities for output
+  # only keep more severe comorbidity
   output$HTN <- (1 - (output$HTNCX > 0))*output$HTN
   output$DM <- (1 - (output$DMCX > 0))*output$DM
   output$TUMOR <- (1 - (output$METS > 0))*output$TUMOR
@@ -50,17 +51,18 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
     colnames(flag) <- names(drgFuns)
     flag <- data.frame(flag)
     nf <- ncol(flag)
-    flag.s <- flag[, (nf-1):nf]
-    flag <- flag[, -((nf-1):nf)]
-    attach(icd.s)
-    flag.HTNCX <- drgFuns.2[[1]](flag.s$CARDRG, flag.s$RENALDRG)
-    flag.RENLFAIL <- drgFuns.2[[2]](flag.s$CARDRG, flag.s$RENALDRG)
-    detach(icd.s)
+    flag.s <- flag[, (nf-1):nf] ## store the flag for CARDDRG and RENALDRG
+    flag <- flag[, -((nf-1):nf)] ## store the flags for outputted comorbidities
+    ## compute the flags for two special comorbidities
+    flag.HTNCX <- specdrgFuns[[1]](htn.complicated, 
+                                   flag.s$CARDRG, flag.s$RENALDRG)
+    flag.RENLFAIL <- specdrgFuns[[2]](htn.complicated, 
+                                      flag.s$CARDRG, flag.s$RENALDRG)
     flag$HTNCX <- (flag$HTNCX+flag.HTNCX) > 0
     flag$RENLFAIL <- (flag$RENLFAIL+flag.RENLFAIL) > 0
     output <- output * (!flag)
   }
-  
+  ## combine HTN and HTNCX to generate variable HTN_C
   output$HTN_C <- output$HTN + output$HTNCX
   output$HTN <- NULL
   output$HTNCX <- NULL

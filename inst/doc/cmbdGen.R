@@ -27,12 +27,15 @@ codeMatch.1 <- function(codes) {
   fun
 }
 
-codeMatch.2 <- function(codes) {
+# input htncx_renlfail.txt and create function
+# to compute the drg flags for 2 comorbidities
+# HTNCX and RENLFAIL with carddrg and renaldrg
+specialDrg.2 <- function(codes) {
   ll <- strsplit(codes, ",")[[1]]
   ll <- trimws(ll)
   text <- ""
-  text <- paste0("rowSums(cbind(", paste(ll, collapse=", "), "))")
-  fun <- function(CARDDRG, RENALDRG) {}
+  text <- paste0("with(icd, rowSums(cbind(", paste(ll, collapse=", "), ")))")
+  fun <- function(icd,CARDDRG, RENALDRG) {}
   body(fun) <- parse(text=text)
   fun
 }
@@ -50,12 +53,13 @@ drgFuns <- sapply(1:nrow(.drg29tab),
                   )
 names(drgFuns) <- .drg29tab[,1]
 
-drgFuns.2 <- sapply(1:nrow(.drgspecial),
-                  function(i) codeMatch.2(.drgspecial[i,2])
+## a list of functions for handling drg flags for two comorbidities
+specdrgFuns <- sapply(1:nrow(.drgspecial),
+                  function(i) specialDrg.2(.drgspecial[i,2])
 )
 
-names(drgFuns.2) <- .drgspecial[,1]
+names(specdrgFuns) <- .drgspecial[,1]
 
-save(cmbdFuns, drgFuns, drgFuns.2,
+save(cmbdFuns, drgFuns, specdrgFuns,
      file='../../R/sysdata.rda', compress=TRUE)
 
