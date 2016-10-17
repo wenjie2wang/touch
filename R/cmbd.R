@@ -20,7 +20,7 @@
 ##'
 ##' data(dxDat)
 ##' drg <- dxDat$drg
-##' icd <- dxDat[, -1L]
+##' icd <- dxDat[, -1L] ## WHY? Already processed in cmbd!
 ##' output <- cmbd(icd, drg=drg)
 ##' @importFrom stringr str_trim
 ##' @export cmbd
@@ -38,28 +38,33 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
                    })
   colnames(output) <- names(cmbdFuns)
   output <- data.frame(output)
-  htn.complicated <- output[, -(1:30)] ## store 10 temporary groups for HTNCX
-  output <- output[, 1:30] ## store the 30 comorbidities for output
-  # only keep more severe comorbidity
-  output$HTN <- (1 - (output$HTNCX > 0))*output$HTN
-  output$DM <- (1 - (output$DMCX > 0))*output$DM
-  output$TUMOR <- (1 - (output$METS > 0))*output$TUMOR
+  htn.cx <- output[, -(1:30)] # store 10 temporary groups for HTNCX
+  output <- output[,   1:30 ] # store the 30 comorbidities for output
+  ## only keep more severe comorbidity
+  with(output, HTN   <- ifelse(HTNCX, 0, HTN))
+  with(output, DM    <- ifelse(DMCX,  0, DM)) 
+  with(output, TUMOR <- ifelse(METS,  0, TUMOR))
   
-  if (!is.null(drg)) {## check drg flags
+  if (!is.null(drg)) { # check drg flags
+    if (!is.vector(drg)) drg <- as.vector(drg)
     stopifnot(nrow(icd) == length(drg))
-    flag <- drgFlag(drg)
+    flag <- sapply(1:length(drgFuns),
+                   function(i) {
+                       flag <- drgFuns[[i]](drg)
+                   })
     colnames(flag) <- names(drgFuns)
     flag <- data.frame(flag)
     nf <- ncol(flag)
-    flag.s <- flag[, (nf-1):nf] ## store the flag for CARDDRG and RENALDRG
-    flag <- flag[, -((nf-1):nf)] ## store the flags for outputted comorbidities
+    flag.s <- flag[, -(1:(nf - 2))] # store the flag for CARDDRG and RENALDRG
+    flag <- flag[, 1:(nf - 2)] # store the flags for outputted comorbidities
     ## compute the flags for two special comorbidities
-    flag.HTNCX <- specdrgFuns[[1]](htn.complicated, 
-                                   flag.s$CARDRG, flag.s$RENALDRG)
-    flag.RENLFAIL <- specdrgFuns[[2]](htn.complicated, 
-                                      flag.s$CARDRG, flag.s$RENALDRG)
+#### THIS block needs to be rewritten using sapply as above
+#### The spacing style needs to be enforced    
+    flag.HTNCX <- specdrgFuns[[1]](htn.cx, flag.s$CARDRG, flag.s$RENALDRG)
+    flag.RENLFAIL <- specdrgFuns[[2]](htn.cx, flag.s$CARDRG, flag.s$RENALDRG)
     flag$HTNCX <- (flag$HTNCX+flag.HTNCX) > 0
     flag$RENLFAIL <- (flag$RENLFAIL+flag.RENLFAIL) > 0
+#### END of block
     output <- output * (!flag)
   }
   ## combine HTN and HTNCX to generate variable HTN_C
@@ -69,15 +74,6 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
   output
 }
 
-drgFlag <- function(drg) {
-  if (!is.vector(drg)) drg <- as.vector(drg)
-  n <- length(drg)
-  output <- sapply(1:length(drgFuns),
-                   function(i) {
-                     flag <- drgFuns[[i]](drg)
-                   })
-  output
-}
 
 ## new measure for infection during childbirth
 chibirInfection <- function(icd, needClean=FALSE, needPrep=FALSE) {
