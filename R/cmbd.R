@@ -41,9 +41,10 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
   htn.cx <- output[, -(1:30)] # store 10 temporary groups for HTNCX
   output <- output[,   1:30 ] # store the 30 comorbidities for output
   ## only keep more severe comorbidity
-  with(output, HTN   <- ifelse(HTNCX, 0, HTN))
-  with(output, DM    <- ifelse(DMCX,  0, DM)) 
-  with(output, TUMOR <- ifelse(METS,  0, TUMOR))
+  
+  output <- within(output, HTN   <- ifelse(HTNCX, 0, HTN))
+  output <- within(output, DM    <- ifelse(DMCX,  0, DM))
+  output <- within(output, TUMOR <- ifelse(METS,  0, TUMOR))
   
   if (!is.null(drg)) { # check drg flags
     if (!is.vector(drg)) drg <- as.vector(drg)
@@ -60,10 +61,13 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
     ## compute the flags for two special comorbidities
 #### THIS block needs to be rewritten using sapply as above
 #### The spacing style needs to be enforced    
-    flag.HTNCX <- specdrgFuns[[1]](htn.cx, flag.s$CARDRG, flag.s$RENALDRG)
-    flag.RENLFAIL <- specdrgFuns[[2]](htn.cx, flag.s$CARDRG, flag.s$RENALDRG)
-    flag$HTNCX <- (flag$HTNCX+flag.HTNCX) > 0
-    flag$RENLFAIL <- (flag$RENLFAIL+flag.RENLFAIL) > 0
+    flag.2 <- sapply(1:length(specdrgFuns),
+                   function(i) {
+                     flag <- with(flag.s, 
+                                  specdrgFuns[[i]](htn.cx, CARDDRG, RENALDRG))
+                   })
+    flag <- within(flag, HTNCX <- (HTNCX + flag.2[, 1]) > 0)
+    flag <- within(flag, RENLFAIL <- (RENLFAIL + flag.2[, 2]) > 0)
 #### END of block
     output <- output * (!flag)
   }

@@ -181,7 +181,9 @@ Matchnames <- function(code) {
   str_replace_all(f, pattern="'", replacement="")
 }
 
-url <- "http://www.hcup-us.ahrq.gov/toolssoftware/comorbidity/comformat2012-2015.txt"
+url <- read.table("sas-url.txt")[[6]]
+url <- as.character(url)
+
 cmbd <- CatchCode(url)
 
 ICD.code <- cmbd$ICD.code

@@ -35,7 +35,7 @@ specialDrg.2 <- function(codes) {
   ll <- trimws(ll)
   text <- ""
   text <- paste0("with(icd, rowSums(cbind(", paste(ll, collapse=", "), ")))")
-  fun <- function(icd,CARDDRG, RENALDRG) {}
+  fun <- function(icd, CARDDRG, RENALDRG) {}
   body(fun) <- parse(text=text)
   fun
 }
