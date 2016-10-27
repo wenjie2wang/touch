@@ -20,7 +20,7 @@
 ##'
 ##' data(dxDat)
 ##' drg <- dxDat$drg
-##' icd <- dxDat[, -1L] ## WHY? Already processed in cmbd!
+##' icd <- dxDat[, -1L]
 ##' output <- cmbd(icd, drg=drg)
 ##' @importFrom stringr str_trim
 ##' @export cmbd
@@ -59,8 +59,6 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
     flag.s <- flag[, -(1:(nf - 2))] # store the flag for CARDDRG and RENALDRG
     flag <- flag[, 1:(nf - 2)] # store the flags for outputted comorbidities
     ## compute the flags for two special comorbidities
-#### THIS block needs to be rewritten using sapply as above
-#### The spacing style needs to be enforced    
     flag.2 <- sapply(1:length(specdrgFuns),
                    function(i) {
                      flag <- with(flag.s, 
@@ -68,7 +66,6 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
                    })
     flag <- within(flag, HTNCX <- (HTNCX + flag.2[, 1]) > 0)
     flag <- within(flag, RENLFAIL <- (RENLFAIL + flag.2[, 2]) > 0)
-#### END of block
     output <- output * (!flag)
   }
   ## combine HTN and HTNCX to generate variable HTN_C
@@ -91,6 +88,26 @@ chibirInfection <- function(icd, needClean=FALSE, needPrep=FALSE) {
   output <- rowSums(output, na.rm=TRUE)
   (output > 0) * 1
 }
+
+##' Comorbidity measures from AHRQ HCUP
+##'
+##' This function cleans the character matrix of icd9 codes by converting the icd9 
+##' codes to char codes with length equal to 5.
+##' 
+##' 
+##' @param input a character matrix of icd9 codes, with rows representing
+##' patients.
+##' @return a matrix of cleaned icd9 codes with char length equal to 5
+##' @author Jun Yan
+##' @references Elixhauser et. al. (1998)
+##' @keywords manipulation
+##' @examples
+##'
+##' data(dxDat)
+##' icd <- dxDat[, -1L]
+##' output <- icd9Clean(icd)
+##' @importFrom stringr str_trim
+##' @export icd9Clean
 
 icd9Clean <- function(input) {
   output <- trimws(input)
