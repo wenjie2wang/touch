@@ -41,11 +41,11 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
   htn.cx <- output[, -(1:30)] # store 10 temporary groups for HTNCX
   output <- output[,   1:30 ] # store the 30 comorbidities for output
   ## only keep more severe comorbidity
-  
+
   output <- within(output, HTN   <- ifelse(HTNCX, 0, HTN))
   output <- within(output, DM    <- ifelse(DMCX,  0, DM))
   output <- within(output, TUMOR <- ifelse(METS,  0, TUMOR))
-  
+
   if (!is.null(drg)) { # check drg flags
     if (!is.vector(drg)) drg <- as.vector(drg)
     stopifnot(nrow(icd) == length(drg))
@@ -61,7 +61,7 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
     ## compute the flags for two special comorbidities
     flag.2 <- sapply(1:length(specdrgFuns),
                    function(i) {
-                     flag <- with(flag.s, 
+                     flag <- with(flag.s,
                                   specdrgFuns[[i]](htn.cx, CARDDRG, RENALDRG))
                    })
     flag <- within(flag, HTNCX <- (HTNCX + flag.2[, 1]) > 0)
@@ -89,32 +89,53 @@ chibirInfection <- function(icd, needClean=FALSE, needPrep=FALSE) {
   (output > 0) * 1
 }
 
-##' Comorbidity measures from AHRQ HCUP
+
+##' Reformat Comorbidity Measures
 ##'
-##' This function cleans the character matrix of icd9 codes by converting the icd9 
-##' codes to char codes with length equal to 5.
-##' 
-##' 
-##' @param input a character matrix of icd9 codes, with rows representing
+##' This function processes the character matrix of ICD9 codes by converting the
+##' them to character codes of length 5.  For SAS procedure at HCUP, it trims or
+##' keeps all character vector to be of length 5, fills in missing trailing
+##' white space, and capitalizes the first character in ICD9 codes.
+##'
+##' @param input a character matrix of ICD9 codes, with rows representing
 ##' patients.
+##' @param style a character vector valued either "touch" or "hcup".
 ##' @return a matrix of cleaned icd9 codes with char length equal to 5
-##' @author Jun Yan
+##' @author Jun Yan and Wenjie Wang
 ##' @references Elixhauser et. al. (1998)
 ##' @keywords manipulation
 ##' @examples
-##'
 ##' data(dxDat)
 ##' icd <- dxDat[, -1L]
 ##' output <- icd9Clean(icd)
-##' @importFrom stringr str_trim
 ##' @export icd9Clean
-
-icd9Clean <- function(input) {
-  output <- trimws(input)
-  nc <- nchar(output)
-  output <- ifelse(nc == 3, paste(output, "00", sep=""), output)
-  output <- ifelse(nc == 4, paste(output, "0",  sep=""), output)
-  output
+icd9Clean <- function(input, style = c("touch", "hcup")) {
+    style <- match.arg(style)
+    if (! is.matrix(input)) input <- as.matrix(input)
+    if (style == "touch") {
+        output <- trimws(input)
+        nc <- nchar(output)
+        output <- ifelse(nc == 3, paste0(output, "00"), output)
+        output <- ifelse(nc == 4, paste0(output, "0"), output)
+        return(output)
+    }
+    ## else for sas script from hcup
+    dx <- input
+    ## first trim at left side
+    dx <- trimws(as.character(dx), "left")
+    ndx <- nchar(dx)
+    ## cut at 5 for dx nchar greater than 5
+    nCharGt5 <- dx[idxGt5 <- (ndx > 5)]
+    dx[idxGt5] <- substring(nCharGt5, 1, 5)
+    ## add trailling space for dx nchar less than 5
+    nCharLt5 <- dx[idxLt5 <- (ndx < 5)]
+    space5 <- paste(rep(" ", 5), collapse = "")
+    dx[idxLt5] <- substring(paste0(nCharLt5, space5), 1, 5)
+    ## capitalize
+    dx <- toupper(dx)
+    ## recover the dimensions
+    dim(dx) <- dim(input)
+    dx
 }
 
 
@@ -124,7 +145,7 @@ icd9Prep <- function(input) {
   input <- sub("^E", "11", input)
   input <- sub("^V", "12", input)
   output <- matrix(as.numeric(input) / 100, nrow=nrow(input))
-  dimnames(output) <- dimnames(input)  
+  dimnames(output) <- dimnames(input)
   output
 }
 
