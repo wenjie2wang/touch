@@ -95,18 +95,20 @@ chibirInfection <- function(icd, needClean=FALSE, needPrep=FALSE) {
 
 ##' Reformat Comorbidity Measures
 ##'
-##' This function processes the character matrix of ICD9 codes by converting the
-##' them to character codes of length 5.  For SAS procedure at HCUP, it trims or
-##' keeps all character vector to be of length 5, fills in missing trailing
+##' This function processes the character matrix of ICD9 codes by converting
+##' them to character codes of length 5.  For SAS procedure from HCUP, it trims
+##' all character string to be of length 5, adds the missing trailing
 ##' white space, and capitalizes the first character in ICD9 codes.
 ##'
 ##' @param input a character matrix of ICD9 codes, with rows representing
 ##' patients.
-##' @param style a character vector valued either "touch" or "hcup".
-##' @return a matrix of cleaned icd9 codes with char length equal to 5
+##' @param style a character vector of length one indicating the reformatting
+##' style to follow.  The possible option are "touch" and "hcup". The former
+##' does the cleaning for this package; The latter does the reformatting for
+##' the SAS script provided by HCUP.
+##'
+##' @return a matrix of cleaned ICD9 codes.
 ##' @author Jun Yan and Wenjie Wang
-##' @references Elixhauser et. al. (1998)
-##' @keywords manipulation
 ##' @examples
 ##' data(dxDat)
 ##' icd <- dxDat[, -1L]
@@ -123,9 +125,8 @@ icd9Clean <- function(input, style = c("touch", "hcup")) {
         return(output)
     }
     ## else for sas script from hcup
-    dx <- input
     ## first trim at left side
-    dx <- trimws(as.character(dx), "left")
+    dx <- trimws(as.character(input), "left")
     ndx <- nchar(dx)
     ## cut at 5 for dx nchar greater than 5
     nCharGt5 <- dx[idxGt5 <- (ndx > 5)]
