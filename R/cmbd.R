@@ -24,8 +24,8 @@
 ##' output <- cmbd(icd, drg=drg)
 ##' @importFrom stringr str_trim
 ##' @export cmbd
-cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
-  if (!is.matrix(icd)) icd <- as.matrix(icd)
+cmbd <- function(icd, drg = NULL, needClean = TRUE, needPrep = TRUE) {
+  if (! is.matrix(icd)) icd <- as.matrix(icd)
   if (needClean) icd <- icd9Clean(icd)
   if (needPrep) icd <- icd9Prep(icd)
   n <- nrow(icd)
@@ -40,8 +40,11 @@ cmbd <- function(icd, drg=NULL, needClean=TRUE, needPrep=TRUE) {
   output <- data.frame(output)
   htn.cx <- output[, -(1:30)] # store 10 temporary groups for HTNCX
   output <- output[,   1:30 ] # store the 30 comorbidities for output
-  ## only keep more severe comorbidity
 
+  ## nonsense, just to suppress the note from R CMD check --as-cran
+  DMCX <- METS <- NULL
+
+  ## only keep more severe comorbidity
   output <- within(output, HTN   <- ifelse(HTNCX, 0, HTN))
   output <- within(output, DM    <- ifelse(DMCX,  0, DM))
   output <- within(output, TUMOR <- ifelse(METS,  0, TUMOR))

@@ -1,13 +1,13 @@
 Package: touch
-Title: Tools Of Utilization and Cost in Healthcare
+Title: Tools of Utilization and Cost in Healthcare
 Version: 0.1-3.9000
-Date: 2016-10-16
+Date: 2016-10-27
 Authors@R: c(
     person(given = "Yan", family = "Li",
            email = "yan.4.li@uconn.edu",
            role = c("aut", "cre")),
-    person(given = "Wenjie", family = "Wang", role = "ctb"),
-    person(given = "Jun", family = "Yan", role = "aut")
+    person(given = "Jun", family = "Yan", role = "aut"),
+    person(given = "Wenjie", family = "Wang", role = "ctb")
     )
 Description: Tools of unilization and cost in healthcare is an R implementation
     of the software tools developed in the H-CUP (Healthcare Cost and
