@@ -72,9 +72,8 @@ cmbd <- function(icd, drg = NULL, needClean = TRUE, needPrep = TRUE) {
     output <- output * (!flag)
   }
   ## combine HTN and HTNCX to generate variable HTN_C
-  output$HTN_C <- output$HTN + output$HTNCX
-  output$HTN <- NULL
-  output$HTNCX <- NULL
+  output <- within(output, HTN_C <- HTN + HTNCX)
+  output <- subset(output, select = -c(HTN, HTNCX))
   output
 }
 
