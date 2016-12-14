@@ -3,11 +3,11 @@
 ^\.Rproj\.user$
 ^\.Rhistory$
 \.Rcheck$
-^\.Rhistory$
 ~$
 ^\.\#
 ^\#
 ^\.git$
+^\.travis\.yml$
 ^Makefile$
 ^NEWS\.md$
 ^README\.md$
