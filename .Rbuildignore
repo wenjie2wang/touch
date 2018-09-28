@@ -3,6 +3,7 @@
 ^\.Rproj\.user$
 ^\.Rhistory$
 \.Rcheck$
+^inst/ahrq/gem$
 ~$
 ^\.\#
 ^\#
