@@ -20,7 +20,7 @@ build: $(tar)
 $(tar): $(objects)
 	@$(MAKE) -s updateTimestamp
 	Rscript -e "library(methods); devtools::document();";
-	R CMD build .
+	R CMD build --resave-data .
 
 $(checkLog): $(tar)
 	R CMD check --as-cran $(tar)
@@ -33,7 +33,7 @@ install: $(tar)
 .PHONY: updateTimestamp
 updateTimestamp:
 	dt=$$(date +"%Y-%m-%d");\
-	sed -i "s/Date: [0-9]\{4\}-[0-9]+-[0-9]+/Date: $$dt/" DESCRIPTION;
+	sed -i "s/Date: [0-9]\{4\}-[0-9]\{1,2\}-[0-9]\{1,2\}/Date: $$dt/" DESCRIPTION;
 
 ## make tags
 .PHONY: TAGS
