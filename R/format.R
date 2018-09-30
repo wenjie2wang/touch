@@ -27,15 +27,15 @@ insert_dot <- function(dx, version = c(10, 9)) {
     version <- match.arg(as.character(version), c("10", "9"))
     dx <- toupper(remove_dot(trimws(dx)))
     if (version == "9") {
-        ind <- as.integer(grepl("^[Ee]", dx))
+        ind <- as.integer(grepl("^E", dx))
         out <- substr(dx, 1L, 3L + ind)
-        minors <- substring(dx, 4L + ind)
+        subcat <- substring(dx, 4L + ind)
     } else {
         out <- substr(dx, 1L, 3L)
-        minors <- substring(dx, 4L)
+        subcat <- substring(dx, 4L)
     }
-    empty_idx <- minors != ""
-    out[empty_idx] <- paste0(out[empty_idx], ".", minors[empty_idx])
+    empty_idx <- subcat != ""
+    out[empty_idx] <- paste0(out[empty_idx], ".", subcat[empty_idx])
     out
 }
 
