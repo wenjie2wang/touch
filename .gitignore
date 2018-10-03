@@ -2,9 +2,12 @@
 *.Rproj
 .Rhistory
 *.tar.gz
-NAMESPACE
-man/
 reference
+working/
+GPATH
+GRTAGS
+GTAGS
+TAGS
 *.Rcheck/
 *.*~
 *~
