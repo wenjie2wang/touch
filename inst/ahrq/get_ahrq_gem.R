@@ -11,7 +11,7 @@ gem17_zip <- "2017-GEM-DC.zip"
 gem18_zip <- "2018-ICD-10-CM-General-Equivalence-Mappings.zip"
 
 ## define output directory
-outDir <- "gem"
+outDir <- "downloads"
 if (! dir.exists(outDir)) dir.create(outDir)
 
 ## download all
