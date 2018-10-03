@@ -43,3 +43,10 @@ TAGS:
 .PHONY: clean
 clean:
 	@rm -rf *~ */*~ *.Rhistroy *.tar.gz *.Rcheck/ .\#*
+
+.PHONY: cleanCache
+cleanCache:
+	@rm -rf src/{*.o,*.so,RcppExports.cpp} R/RcppExports.R
+
+.PHONY: cleanAll
+cleanAll: clean cleanCache
