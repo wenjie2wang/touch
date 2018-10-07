@@ -5,10 +5,7 @@
 #include <vector>
 #include <algorithm>
 
-#include <sparsepp/spp.h>
-//[[Rcpp::depends(sparsepp)]]
-
-typedef spp::sparse_hash_map<std::string, std::string> gem;
+typedef std::unordered_map<std::string, std::string> gem;
 
 
 // gem for year 2017

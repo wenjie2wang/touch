@@ -18,7 +18,7 @@ Description: Tools of unilization and cost in healthcare is an R implementation
 Depends:
     R (>= 3.2.0)
 LinkingTo:
-    Rcpp, sparsepp
+    Rcpp
 Imports:
     Rcpp, stringr
 License: GPL (>= 3)

@@ -1,14 +1,10 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <Rcpp.h>
 
-#include <fstream>
 #include <string>
 #include <vector>
 
-#include <sparsepp/spp.h>
-//[[Rcpp::depends(sparsepp)]]
-
-typedef spp::sparse_hash_map<std::string, std::string> gem;
+typedef std::unordered_map<std::string, std::string> gem;
 
 // gem for year 2017
 gem forward_map_2017;
