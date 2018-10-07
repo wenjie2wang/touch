@@ -1,48 +1,33 @@
 ### internal utility functions
-## create an environment from a given set of keys and values
-dict <- function(keys, values)
-{
-    res <- new.env(hash = TRUE, parent = emptyenv())
-    ## convert keys to character strings if needed
-    if (! is.character(keys))
-        keys <- as.character(keys)
-    ## check if any duplicated keys
-    if (anyDuplicated(keys)) {
-        lastIdx <- ! duplicated(keys, fromLast = TRUE)
-        keys <- keys[lastIdx]
-        values <- values[lastIdx]
-        warning("Values for duplicated keys will be overwritten",
-                "and only the last value will be used.")
-    }
-    ## recycle values if needed
-    len_keys <- length(keys)
-    if (len_keys != length(values))
-        values <- rep_len(values, length.out = len_keys)
-    ## assign values to keys in res
-    for (i in seq_along(keys)) {
-        assign(keys[i], values[i], res)
-    }
-    ## return
-    res
+
+## replace empty strings to NA_character
+empty2na <- function(x) {
+    x[x == ""] <- NA_character_
+    x
 }
 
-## aggregate diagnosis codes
-aggregate_dx <- function(dx_codes, ...)
-{
-    dx <- c(dx_codes, ...)
-    ## remove empty strings and NA's
-    idx <- is.na(dx) | dx == ""
-    dx <- dx[! idx]
-    u_dx <- sort(unique(strsplit2vec(dx)))
-    if (length(u_dx) > 1) {
-        paste(u_dx, collapse = ",")
-    } else if (length(u_dx) == 0L) {
-        ""
-    } else
-        u_dx
+## helper that checks whether the input character vector contains any comma
+has_comma <- function(x) {
+    any(grepl(",", x, fixed = TRUE))
 }
 
-## strsplit to vector
-strsplit2vec <- function(x, split = ",", ...) {
-    do.call(c, strsplit(x, split = split, ...))
+## aggregate dx list to a tidy data.frame
+dx_list2tidy <- function(x, x_names = NULL, col_names = NULL) {
+    if (is.null(x_names)) {
+        x_names <- names(x)
+    }
+    if (is.null(x_names)) {
+        out <- do.call(rbind, lapply(x, function(a) {
+            data.frame(a, stringsAsFactors = FALSE)
+        }))
+    } else {
+        out <- do.call(rbind, lapply(seq_along(x), function(i) {
+            data.frame(x_names[i], x[[i]], stringsAsFactors = FALSE)
+        }))
+    }
+    ## add colnames if needed
+    if (! is.null(col_names))
+        colnames(out) <- col_names
+    ## return out
+    out
 }
