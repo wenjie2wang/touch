@@ -2,6 +2,8 @@
 *.Rproj
 .Rhistory
 *.tar.gz
+*.so
+*.o
 reference
 working/
 GPATH
