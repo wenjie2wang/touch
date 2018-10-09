@@ -6,19 +6,21 @@
 \usage{
 icd_map(dx, from = 9, to = 10, year = 2018,
         method = c("gem", "reverse-gem", "both", "multi-stage"),
-        decimal = FALSE, nomatch = c('""', NA), simplify = TRUE,
-        cache = TRUE, ...)
+        decimal = FALSE, nomatch = c('""', NA),
+        output = c("character", "list", "tidy-data"), cache = TRUE, ...)
 }
 \arguments{
-\item{dx}{A character vector representing diagnosis codes of a number of
-patients.  Each element of the vector (character string) represents
-the diagnosis codes of one patient.}
+\item{dx}{A character vector representing diagnosis codes.  Each element
+of the vector can either represent individual diagnosis code or a set
+of diagnosis codes that are concartenated by commas in between.}
 
 \item{from}{A integer value specifying the original code version.
 Currently, the available options are \code{9} or \code{10}.}
 
 \item{to}{A integer value specifying the original code version.
-Currently, the available options are \code{9} or \code{10}.}
+Currently, the available options are \code{9} or \code{10}.  If the
+input \code{from} and \code{to} are the same, the function will skip
+all the translation and return the input \code{dx} with a warning.}
 
 \item{year}{A numeric value specifying the year of the CMS GEMs.  The
 currently available options are \code{2017} and \code{2018}.  By
@@ -39,12 +41,17 @@ more specific \code{NA_character_}).  In that case, the code will be
 translated to \code{NA_character_} if no translataion result can be
 found.}
 
-\item{simplify}{A logical value specifying whether to simplify the output
-to a character vector with element-wise concatenatation by commas of
-all the translated diagnosis codes from the original codes.  The
-default value is \code{TRUE}.  If \code{FALSE}, all the translated
+\item{output}{A character value specifying the format of the output.  The
+avaiable options are \code{"character"}, \code{"list"}, and
+\code{"tidy-data"}.  By default, option \code{"character"} is used and
+results in a character vector that consists of element-wise
+concatenatation by commas of all the translated diagnosis codes from
+the original codes.  If \code{"list"} is specified, all the translated
 codes will not be concartenated and a list of character vectors will
-be returned by the function.}
+be returned by the function.  Similarly, if \code{"tidy-data"} is
+specified, a data frame in a tidy format will be returned.  The first
+column of the data frame consists of the original diagnosis codes; the
+second column consists of the translated diagnosis codes.}
 
 \item{cache}{A logical value specifying whether to cache all the mappings
 for \code{method = "both"} (both CMS GEM and its reverse mapping), and
@@ -62,9 +69,10 @@ if any argument goes into \code{...} accidentally.}
 }
 \value{
 A character vector of the same length with the input vector will
-    be returned if \code{simplify} is \code{TRUE} (by default).
-    Otherwise, A list of character vectors will be returned instead.  See
-    argument \code{simplify} for details.
+    be returned by default or if \code{output = "charactor"}.  A list of
+    character vectors will be returned if \code{output = "list"}; A data
+    frame in tidy-format will be returned if \code{output = "tidy-data"}.
+    See argument \code{output} for details.
 }
 \description{
 This function provides an open-source implementation in R in addition to
@@ -96,41 +104,43 @@ codes.
 \examples{
 library(touch)
 
-## some random ICD-9 and ICD-10 codes
+### some random ICD-9 and ICD-10 codes
 icd9codes <- c("0011", "001.1", "316", "29383", "E9808", "V90")
 icd10codes <- c("F0390", "F0630", "F54", "F30.13", "A010", "M61019")
 
-## forward mapping from ICD-9 to ICD-10
+### forward mapping from ICD-9 to ICD-10
 icd_map(icd9codes)
 icd_map(icd9codes, decimal = TRUE, nomatch = NA)
 
-## backward mapping from ICD-10 to ICD-9
+### backward mapping from ICD-10 to ICD-9
 icd_map(icd10codes, from = 10, to = 9)
-icd_map(icd10codes, from = 10, to = 9, nomatch = NA, simplify = FALSE)
+icd_map(icd10codes, from = 10, to = 9, nomatch = NA, output = "list")
+icd_map(icd10codes, from = 10, to = 9,
+        decimal = TRUE, nomatch = NA, output = "tidy")
 
-## reverse-backward mapping from ICD-9 to ICD-10
+### reverse-backward mapping from ICD-9 to ICD-10
 icd_map(icd9codes, method = "reverse-gem")
 icd_map(icd9codes, method = "reverse", decimal = TRUE, nomatch = NA)
 
-## reverse-forward mapping from ICD-10 to ICD-9
+### reverse-forward mapping from ICD-10 to ICD-9
 icd_map(icd10codes, from = 10, to = 9, method = "reverse-gem")
 icd_map(icd10codes, from = 10, to = 9, method = "reverse",
         decimal = TRUE, nomatch = NA)
 
-## forward and reverse-backward mapping from ICD-9 to ICD-10
+### forward and reverse-backward mapping from ICD-9 to ICD-10
 icd_map(icd9codes, method = "both")
 icd_map(icd9codes, method = "both", decimal = TRUE, nomatch = NA)
 
-## backward and reverse-forward mapping from ICD-10 to ICD-9
+### backward and reverse-forward mapping from ICD-10 to ICD-9
 icd_map(icd10codes, from = 10, to = 9, method = "both")
 icd_map(icd10codes, from = 10, to = 9, method = "both",
         decimal = TRUE, nomatch = NA)
 
-## multi-stage process mapping ICD-9 to ICD-10
+### multi-stage process mapping ICD-9 to ICD-10
 icd_map(icd9codes, method = "multi-stage")
 icd_map(icd9codes, method = "multi-stage", decimal = TRUE, nomatch = NA)
 
-## multi-stage process mapping ICD-10 to ICD-9
+### multi-stage process mapping ICD-10 to ICD-9
 icd_map(icd10codes, from = 10, to = 9,
         method = "multi-stage", cache = FALSE)
 icd_map(icd10codes, from = 10, to = 9, method = "multi-stage",
@@ -153,6 +163,9 @@ The AHRQ MapIT Automated In-house Stand-alone Mapping Tool. Agency for
 Healthcare Research and Quality. 26 March, 2018.
 \url{https://www.qualityindicators.ahrq.gov/resources/toolkits.aspx}.
 Accessed 28 September, 2018.
+}
+\seealso{
+\code{\link{find_billable}}
 }
 \author{
 Wenjie Wang <wenjie.2.wang@uconn.edu>
