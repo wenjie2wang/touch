@@ -2,11 +2,19 @@
 
 [![CRAN_Status_Badge][cranVersion]][cran]
 
+
 The package **touch** (**T**ools **o**f **u**nilization and **c**ost in
-**h**ealthcare) is an **R** implementation of the software tools developed in the
-H-CUP (Healthcare Cost and Utilization Project) at AHRQ (Agency for Healthcare
-Research and Quality).  It currently contains functions to map ICD9 code to AHRQ
-comorbidity measures.
+**h**ealthcare) provides **R** implementation of the software tools developed
+in the H-CUP (Healthcare Cost and Utilization Project) and AHRQ (Agency for
+Healthcare Research and Quality).
+
+
+It currently contains functions for
+
+- mapping ICD-9 codes to the AHRQ comorbidity measures
+- translating ICD-9 (resp. ICD-10) codes to ICD-10 (resp. ICD-9) codes based
+  on GEM (General Equivalence Mappings) from CMS (Centers for Medicare and
+  Medicaid Services).
 
 
 ## Installation
@@ -15,6 +23,16 @@ You may install the released version from [CRAN][cran].
 
 ```R
 install.packages("touch")
+```
+
+Or you may install the latest version under development with the help of
+**remotes** (or **devtools**) as follows:
+
+```R
+if (! require(remotes)) install.packages("remotes")
+remotes::install_github("LiYanStat/touch")
+## or use devtools
+## devtools::install_github("LiYanStat/touch")
 ```
 
 

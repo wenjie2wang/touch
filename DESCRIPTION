@@ -10,11 +10,13 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-0363-3180")),
     person(given = "Jun", family = "Yan", role = "aut")
     )
-Description: Tools of unilization and cost in healthcare is an R implementation
-    of the software tools developed in the H-CUP (Healthcare Cost and
-    Utilization Project) at AHRQ (Agency for Healthcare Research and Quality).
-    It currently contains functions to map ICD9 code to AHRQ comorbidity
-    measures.
+Description: R implementation of the software tools developed in the H-CUP
+    (Healthcare Cost and Utilization Project) and AHRQ (Agency for Healthcare
+    Research and Quality).  It currently contains functions for mapping ICD-9
+    codes to the AHRQ comorbidity measures and translating ICD-9
+    (resp. ICD-10) codes to ICD-10 (resp. ICD-9) codes based on GEM (General
+    Equivalence Mappings) from CMS (Centers for Medicare and Medicaid
+    Services).
 Depends:
     R (>= 3.2.0)
 LinkingTo:
