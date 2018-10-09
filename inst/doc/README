@@ -5,15 +5,14 @@ Input:  icd.txt, drg.txt, htncx_renlfail.txt
 Output: sysdata.rda
 
 
-The input file htncx_renlfail.txt is got from 
-reading and understanding the usage of CARDDRG and RENALDRG 
+The input file htncx_renlfail.txt is got from
+reading and understanding the usage of CARDDRG and RENALDRG
 code for two special comorbidities HTNCX and RENLFAIL.
 And icd.txt and drg.txt are generated from
 CodeGen/FormatCode.R.
 
 For formatcode,
 
-Input : http url of sas format code stored in sas-url.txt, 
+Input : http url of sas format code stored in sas-url.txt,
         icd-combination.txt, drg-combination.txt
 Output: icd.txt, drg.txt
-

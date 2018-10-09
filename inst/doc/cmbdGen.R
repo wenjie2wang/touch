@@ -44,7 +44,7 @@ specialDrg.2 <- function(codes) {
 cmbdFuns <- sapply(1:nrow(.icd9tab),
                    function(i) codeMatch.1(.icd9tab[i,2])
                    )
-  
+
 names(cmbdFuns) <- .icd9tab[,1]
 
 ## a list of functions for drg code
@@ -62,4 +62,3 @@ names(specdrgFuns) <- .drgspecial[,1]
 
 save(cmbdFuns, drgFuns, specdrgFuns,
      file='../../R/sysdata.rda', compress=TRUE)
-

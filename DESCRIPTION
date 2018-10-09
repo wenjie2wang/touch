@@ -20,7 +20,7 @@ Depends:
 LinkingTo:
     Rcpp
 Imports:
-    Rcpp, stringr
+    Rcpp
 License: GPL (>= 3)
 LazyData: yes
 SysDataCompression: xz

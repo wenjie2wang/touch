@@ -1,5 +1,3 @@
-library(stringr)
-
 CatchCode <- function(x) {
   # Arg:
   #  x: url of SAS format code
@@ -10,7 +8,7 @@ CatchCode <- function(x) {
   #  ICD.class: ICD-9 name for temporary 40 comorbidity group
   format.txt <- readLines(url)
   # delete all the SAS annotation and code rows, keep the ICD-9-CM and DRG codes
-  format.txt <- str_trim(grep(pattern="\\d|=|VALUE", x=format.txt, value=TRUE))
+  format.txt <- trimws(grep(pattern="\\d|=|VALUE", x=format.txt, value=TRUE))
   format.txt <- format.txt[which(substr(format.txt, start=1, stop=1) != "/")]
   Fstart <- format.txt[which(substr(format.txt, start=1, stop=1) == '"')][1]
   format.txt <- format.txt[-(1 : which(format.txt == Fstart) - 1)]
@@ -20,17 +18,17 @@ CatchCode <- function(x) {
   for (i in 1:length(DRG.name)) {
     DRG.order <- c(DRG.order, which(format.txt == DRG.name[i]))
   }
-  
+
   DRG.class <- NULL
   # store the names of DRG in DRG.class array using the names like CARDDRG
   for (i in 1 : length(DRG.name)) {
     start.flag <- str_locate(DRG.name[i], pattern='(DRG)')[[1]]
-    DRG.class <- c(DRG.class, substr(DRG.name[i], 
-                                     start=6, 
+    DRG.class <- c(DRG.class, substr(DRG.name[i],
+                                     start=6,
                                      stop=start.flag[length(start.flag)]+2))
-    DRG.class <- str_trim(DRG.class)
+    DRG.class <- trimws(DRG.class)
   }
-  
+
   DRG.code <- NULL
   # by Group catenate all of the strings containing the DRG codes
   for (i in 1 : (length(DRG.order))) {
@@ -49,15 +47,15 @@ CatchCode <- function(x) {
   # remove the SAS annotation in DRG.code
   eq.start <- subset(str_locate(DRG.code, pattern="="), select=start)
   DRG.code <- substr(DRG.code, start=1, stop=eq.start-1)
-  DRG.code <- str_trim(DRG.code)
+  DRG.code <- trimws(DRG.code)
   DRG.code <- str_replace_all(DRG.code, pattern=' ', replacement="")
   DRG.code <- str_replace_all(DRG.code, pattern=',', replacement=", ")
-  
+
   # handling ICD-9 codes
   ICD <- format.txt[1 : (DRG.order[1]-2)]
-  
+
   ICD.name <- grep(pattern="=", x=ICD, value=TRUE)
-  
+
   ICD.order <- NULL ## the numbers of row containing comorbodity names.
   for (i in 1:length(ICD.name)) {
     ICD.order <- c(ICD.order, which(format.txt == ICD.name[i]))
@@ -65,9 +63,9 @@ CatchCode <- function(x) {
   # select comorbodity nanmes and store in ICD.name
   eq.order <- subset(str_locate(ICD.name, pattern="="), select=start)
   a.order <- subset(str_locate(ICD.name, pattern="(/)"), select=start)
-  ICD.class <- str_trim(substr(ICD.name, start= eq.order+1, stop=a.order-1))
+  ICD.class <- trimws(substr(ICD.name, start= eq.order+1, stop=a.order-1))
   ICD.class <- str_replace_all(ICD.class, pattern='\"', replacement="")
-  
+
   ICD.code <- NULL
   for (i in 1 : (length(ICD.order))) {
     ICD.code.k <- " "
@@ -83,8 +81,8 @@ CatchCode <- function(x) {
     ICD.code <-c(ICD.code, ICD.code.k)
   }
   I <- subset(str_locate(ICD.code, pattern="="), select=start)
-  
-  ICD.code <- str_trim(substr(ICD.code, start= 1, stop=I-1))
+
+  ICD.code <- trimws(substr(ICD.code, start= 1, stop=I-1))
   ICD.code <- str_replace_all(ICD.code, pattern=' ', replacement="")
   ICD.code <- str_replace_all(ICD.code, pattern=',', replacement=", ")
   ICD.code <- str_replace_all(ICD.code, pattern='\"', replacement="")
@@ -102,7 +100,7 @@ Adddot <- function(input) {
   ll <- strsplit(ll, ",")[[1]]
   aa <- ";"
   for(k in 1:length(ll)) {
-    ll[k] <- str_trim(ll[k])
+    ll[k] <- trimws(ll[k])
     isE <- grepl("E", ll[k])
     isV <- grepl("V", ll[k])
     isRange <- grepl("-", ll[k])
@@ -113,13 +111,13 @@ Adddot <- function(input) {
       ll[k] <- ifelse(nc == 3, paste(ll[k], "00", sep=""), ll[k])
       ll[k] <- ifelse(nc == 4, paste(ll[k], "0", sep=""), ll[k])
       ll[k] <- as.numeric(ll[k]) / 100
-      ll[k] <- ifelse(isE, paste("E", substr(ll[k], start=3, 
+      ll[k] <- ifelse(isE, paste("E", substr(ll[k], start=3,
                                           stop=nchar(ll[k])), sep=""), ll[k])
-      ll[k] <- ifelse(isV, paste("V", substr(ll[k], start=3, 
+      ll[k] <- ifelse(isV, paste("V", substr(ll[k], start=3,
                                           stop=nchar(ll[k])), sep=""), ll[k])
     } else {
-      inter <- str_trim(strsplit(ll[[k]], "-")[[1]])
-      inter <- sapply(inter, 
+      inter <- trimws(strsplit(ll[[k]], "-")[[1]])
+      inter <- sapply(inter,
                       function(x) {
                         x <- ifelse(nchar(x) == 4, paste(x, "0", sep=""), x)
                              ifelse(nchar(x) == 3, paste(x, "00", sep=""), x)
@@ -127,11 +125,11 @@ Adddot <- function(input) {
       inter <- gsub("E", "11", inter)
       inter <- gsub("V", "12", inter)
       inter <- sapply(inter, function(x) {as.numeric(x) / 100})
-      inter <- sapply(inter, 
-                      function(x) {ifelse(isE, paste("E", substr(x, start=3, 
+      inter <- sapply(inter,
+                      function(x) {ifelse(isE, paste("E", substr(x, start=3,
                                              stop=nchar(x)), sep=""), x)})
-      inter <- sapply(inter, 
-                      function(x) {ifelse(isV, paste("V", substr(x, start=3, 
+      inter <- sapply(inter,
+                      function(x) {ifelse(isV, paste("V", substr(x, start=3,
                                              stop=nchar(x)), sep=""), x)})
       ll[k] <- str_c(inter[1], inter[2], sep="-")
     }
@@ -146,12 +144,12 @@ MatchCode <- function(comb, code) {
   #  comb: icd.comb or drg.comb
   #  code: icd or drg code
   seprt <- subset(str_locate(comb, pattern="="), select=start)
-  cmbd.name <- str_trim(substr(comb, start=1, stop=seprt-1))
-  cmbd.comb <- str_trim(substr(comb, start=seprt+1, stop=nchar(comb)))
-  
+  cmbd.name <- trimws(substr(comb, start=1, stop=seprt-1))
+  cmbd.comb <- trimws(substr(comb, start=seprt+1, stop=nchar(comb)))
+
   cmbd <- list()
   for(i in 1:length(cmbd.comb)) {
-    m <- str_trim(str_split_fixed(cmbd.comb[i], pattern=",", 
+    m <- trimws(str_split_fixed(cmbd.comb[i], pattern=",",
                                   n=str_count(cmbd.comb[i], pattern=',')+1))
     cmbd[[i]] <- m
   }
@@ -175,7 +173,7 @@ Matchnames <- function(code) {
   # change list of code to charactor vectors
   f <- NULL
   name <- names(code)
-  for(i in 1:length(code)) {  
+  for(i in 1:length(code)) {
     f <- c(f, paste0(name[i], ": ", code[[i]]))
   }
   str_replace_all(f, pattern="'", replacement="")

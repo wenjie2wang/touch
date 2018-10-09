@@ -22,7 +22,6 @@
 ##' drg <- dxDat$drg
 ##' icd <- dxDat[, -1L]
 ##' output <- cmbd(icd, drg=drg)
-##' @importFrom stringr str_trim
 ##' @export cmbd
 cmbd <- function(icd, drg = NULL, needClean = TRUE, needPrep = TRUE) {
   if (! is.matrix(icd)) icd <- as.matrix(icd)
