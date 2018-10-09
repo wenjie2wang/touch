@@ -1,9 +1,11 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <Rcpp.h>
 
-#include <string>
-#include <vector>
 #include <algorithm>
+#include <string>
+#include <unordered_set>
+#include <vector>
+
 
 typedef std::unordered_map<std::string, std::string> gem;
 
@@ -13,13 +15,35 @@ extern gem forward_map_2017;
 extern gem backward_map_2017;
 extern gem reverse_forward_map_2017;
 extern gem reverse_backward_map_2017;
+gem frb_map_2017;
+gem brf_map_2017;
+gem multi_0910_map_2017;
+gem multi_1009_map_2017;
 
 // gem for year 2018
 extern gem forward_map_2018;
 extern gem backward_map_2018;
 extern gem reverse_forward_map_2018;
 extern gem reverse_backward_map_2018;
+gem frb_map_2018;
+gem brf_map_2018;
+gem multi_0910_map_2018;
+gem multi_1009_map_2018;
 
+
+// utility functions
+// =============================================================================
+// sort and unique std::vector<std::string>
+inline std::vector<std::string> uni_sort(const std::vector<std::string>& x)
+{
+    std::vector<std::string> out;
+    std::unordered_set<std::string> set_x;
+    for (std::string i : x)
+        set_x.insert(i);
+    out.assign(set_x.begin(), set_x.end());
+    std::sort(out.begin(), out.end());
+    return out;
+}
 
 // function that splits string by commas
 inline std::vector<std::string> split_string(const std::string& x)
@@ -38,7 +62,6 @@ inline std::vector<std::string> split_string(const std::string& x)
     }
     return out;
 }
-
 // rcpp version of the strsplit function with split = "," in R
 inline Rcpp::CharacterVector rcpp_split_string(const Rcpp::CharacterVector& x)
 {
@@ -53,6 +76,7 @@ inline Rcpp::CharacterVector rcpp_split_string(const Rcpp::CharacterVector& x)
         return out;
     }
 }
+
 // [[Rcpp::export]]
 Rcpp::List rcpp_strsplit(const Rcpp::CharacterVector& x)
 {
@@ -75,37 +99,6 @@ inline std::string cat_string(const std::vector<std::string>& x)
     }
     return out;
 }
-// rcpp version of the strsplit function with split = "," in R
-inline Rcpp::String rcpp_cat_string(const Rcpp::CharacterVector& x)
-{
-    if (Rcpp::CharacterVector::is_na(x[0])) {
-        return NA_STRING;
-    } else {
-        std::string xx {
-            cat_string(Rcpp::as<std::vector<std::string>>(x)) };
-        Rcpp::String out {xx};
-        return out;
-    }
-}
-// [[Rcpp::export]]
-Rcpp::CharacterVector rcpp_strcat(const Rcpp::List& x)
-{
-    return Rcpp::sapply(x, rcpp_cat_string);
-}
-
-
-// sort and unique std::vector<std::string>
-inline std::vector<std::string> uni_sort(const std::vector<std::string>& x)
-{
-    std::vector<std::string> out;
-    std::unordered_set<std::string> set_x;
-    for (std::string i : x)
-        set_x.insert(i);
-    out.assign(set_x.begin(), set_x.end());
-    std::sort(out.begin(), out.end());
-    return out;
-}
-
 // concatenate by commas
 // [[Rcpp::export]]
 std::string cat_dx(const std::vector<std::string>& x)
@@ -145,9 +138,114 @@ std::vector<std::string> cat_dx_pair(
     return out;
 }
 
+// rcpp version of the strsplit function with split = "," in R
+inline Rcpp::String rcpp_cat_string(const Rcpp::CharacterVector& x)
+{
+    if (Rcpp::CharacterVector::is_na(x[0])) {
+        return NA_STRING;
+    } else {
+        std::string xx {
+            cat_string(Rcpp::as<std::vector<std::string>>(x)) };
+        Rcpp::String out {xx};
+        return out;
+    }
+}
+// [[Rcpp::export]]
+Rcpp::CharacterVector rcpp_strcat(const Rcpp::List& x)
+{
+    return Rcpp::sapply(x, rcpp_cat_string);
+}
 
-// two not-so-real function templates
-// for mapping one to many
+
+// cache mappings
+// =============================================================================
+// initialize forward + reverse-backward mappings
+void cache_frb_map(const int& year)
+{
+    gem f_gem, rb_gem;
+    gem* p_gem;
+    switch(year)
+    {
+        case 2017:
+            f_gem = forward_map_2017;
+            rb_gem = reverse_backward_map_2017;
+            p_gem = &frb_map_2017;
+            break;
+        case 2018:
+            f_gem = forward_map_2018;
+            rb_gem = reverse_backward_map_2018;
+            p_gem = &frb_map_2018;
+            break;
+        default:
+            throw std::range_error("Year cannot be found.");
+    }
+    std::vector<std::string> all_keys, values;
+    for (auto i { f_gem.begin() };
+         i != f_gem.end(); ++i) {
+        all_keys.push_back(i->first);
+    }
+    for (auto i { rb_gem.begin() };
+         i != rb_gem.end(); ++i) {
+        all_keys.push_back(i->first);
+    }
+    all_keys = uni_sort(all_keys);
+    for (auto it {all_keys.begin()}; it != all_keys.end(); ++it) {
+        values.clear();
+        values.push_back(f_gem[*it]);
+        values.push_back(rb_gem[*it]);
+        (*p_gem).insert(std::make_pair(*it, cat_dx(values)));
+    }
+}
+
+// initialize backward + reverse-forward mappings
+void cache_brf_map(const int& year)
+{
+    gem b_gem, rf_gem;
+    gem* p_gem;
+    switch(year)
+    {
+        case 2017:
+            b_gem = backward_map_2017;
+            rf_gem = reverse_forward_map_2017;
+            p_gem = &brf_map_2017;
+            break;
+        case 2018:
+            b_gem = backward_map_2018;
+            rf_gem = reverse_forward_map_2018;
+            p_gem = &brf_map_2018;
+            break;
+        default:
+            throw std::range_error("Year cannot be found.");
+    }
+    std::vector<std::string> all_keys, values;
+    for (auto i { b_gem.begin() };
+         i != b_gem.end(); ++i) {
+        all_keys.push_back(i->first);
+    }
+    for (auto i { rf_gem.begin() };
+         i != rf_gem.end(); ++i) {
+        all_keys.push_back(i->first);
+    }
+    all_keys = uni_sort(all_keys);
+    for (auto it {all_keys.begin()}; it != all_keys.end(); ++it) {
+        values.clear();
+        values.push_back(b_gem[*it]);
+        values.push_back(rf_gem[*it]);
+        (*p_gem).insert(std::make_pair(*it, cat_dx(values)));
+    }
+}
+
+
+// not-so-real function templates
+// for mapping one to many (scalar version)
+inline std::string gem_o2m_scalar(
+    const std::string& dx,
+    gem& gem_map
+    )
+{
+    return gem_map[dx];
+}
+// for mapping one to many (vector version)
 inline std::vector<std::string> gem_o2m(
     const std::vector<std::string>& dx,
     gem& gem_map
@@ -155,11 +253,25 @@ inline std::vector<std::string> gem_o2m(
 {
     std::vector<std::string> out;
     for (std::string i : dx) {
-        out.push_back(gem_map[i]);
+        out.push_back(gem_o2m_scalar(i, gem_map));
     }
     return out;
 }
-// for mapping many to many
+// for mapping many to many (scalar version)
+inline std::string gem_m2m_scalar(
+    const std::string& dx,
+    gem& gem_map
+    )
+{
+    std::string out;
+    if (dx.find(',') != std::string::npos) {
+        out = cat_dx(gem_o2m(split_string(dx), gem_map));
+    } else {
+        out = gem_o2m_scalar(dx, gem_map);
+    }
+    return out;
+}
+// for mapping many to many (vector version)
 inline std::vector<std::string> gem_m2m(
     const std::vector<std::string>& dx,
     gem& gem_map
@@ -167,291 +279,218 @@ inline std::vector<std::string> gem_m2m(
 {
     std::vector<std::string> out;
     for (std::string i : dx) {
-        out.push_back(cat_dx(gem_o2m(split_string(i), gem_map)));
+        out.push_back(gem_m2m_scalar(i, gem_map));
     }
     return out;
 }
 
 // helper for forward-reverse-backward mapping
-// one to many
-std::vector<std::string> gem_frb_o2m(
+std::vector<std::string> gem_frb(
     const std::vector<std::string>& dx,
-    const int& which_year
+    const int& which_year,
+    bool cache = true
     )
 {
     std::vector<std::string> out;
+    gem *p_f_gem, *p_rb_gem, *p_frb_gem;
     switch(which_year)
     {
         case 2017:
-            out = cat_dx_pair(gem_o2m(dx, forward_map_2017),
-                              gem_o2m(dx, reverse_backward_map_2017));
+            p_f_gem = &forward_map_2017;
+            p_rb_gem = &reverse_backward_map_2017;
+            p_frb_gem = &frb_map_2017;
             break;
         case 2018:
-            out = cat_dx_pair(gem_o2m(dx, forward_map_2018),
-                              gem_o2m(dx, reverse_backward_map_2018));
+            p_f_gem = &forward_map_2018;
+            p_rb_gem = &reverse_backward_map_2018;
+            p_frb_gem = &frb_map_2018;
             break;
         default:
             throw std::range_error("Year cannot be found.");
     }
-    return out;
-}
-// many to many
-std::vector<std::string> gem_frb_m2m(
-    const std::vector<std::string>& dx,
-    const int& which_year
-    )
-{
-    std::vector<std::string> out;
-    switch(which_year)
-    {
-        case 2017:
-            out = cat_dx_pair(gem_m2m(dx, forward_map_2017),
-                              gem_m2m(dx, reverse_backward_map_2017));
-            break;
-        case 2018:
-            out = cat_dx_pair(gem_m2m(dx, forward_map_2018),
-                              gem_m2m(dx, reverse_backward_map_2018));
-            break;
-        default:
-            throw std::range_error("Year cannot be found.");
+    // main part
+    if (cache) {
+        if (p_frb_gem->empty())
+            cache_frb_map(which_year);
+        out = gem_m2m(dx, *p_frb_gem);
+    } else {
+        out = cat_dx_pair(gem_m2m(dx, *p_f_gem),
+                          gem_m2m(dx, *p_rb_gem));
     }
     return out;
 }
 
 // helper for backward_reverse-forward mapping
-// one to many
-std::vector<std::string> gem_brf_o2m(
+std::vector<std::string> gem_brf(
     const std::vector<std::string>& dx,
-    const int& which_year
+    const int& which_year,
+    bool cache = true
     )
 {
     std::vector<std::string> out;
+    gem *p_b_gem, *p_rf_gem, *p_brf_gem;
+    // switch by year
     switch(which_year)
     {
         case 2017:
-            out = cat_dx_pair(gem_o2m(dx, backward_map_2017),
-                              gem_o2m(dx, reverse_forward_map_2017));
+            p_b_gem = &backward_map_2017;
+            p_rf_gem = &reverse_forward_map_2017;
+            p_brf_gem = &brf_map_2017;
             break;
         case 2018:
-            out = cat_dx_pair(gem_o2m(dx, backward_map_2018),
-                              gem_o2m(dx, reverse_forward_map_2018));
+            p_b_gem = &backward_map_2018;
+            p_rf_gem = &reverse_forward_map_2018;
+            p_brf_gem = &brf_map_2018;
             break;
         default:
             throw std::range_error("Year cannot be found.");
+    }
+    // main part
+    if (cache) {
+        if (p_brf_gem->empty())
+            cache_brf_map(which_year);
+        out = gem_m2m(dx, *p_brf_gem);
+    } else {
+        out = cat_dx_pair(gem_m2m(dx, *p_b_gem),
+                          gem_m2m(dx, *p_rf_gem));
     }
     return out;
 }
-// many to many
-std::vector<std::string> gem_brf_m2m(
-    const std::vector<std::string>& dx,
-    const int& which_year
-    )
+
+
+// cache multiple-stage mappings from version 9 to version 10
+void cache_multi_0910_map(const int& which_year)
 {
-    std::vector<std::string> out;
+    gem *p_frb_gem, *p_brf_gem, *p_gem;
     switch(which_year)
     {
         case 2017:
-            out = cat_dx_pair(gem_m2m(dx, backward_map_2017),
-                              gem_m2m(dx, reverse_forward_map_2017));
+            // cache first if needed
+            p_frb_gem = &frb_map_2017;
+            p_brf_gem = &brf_map_2017;
+            p_gem = &multi_0910_map_2017;
             break;
         case 2018:
-            out = cat_dx_pair(gem_m2m(dx, backward_map_2018),
-                              gem_m2m(dx, reverse_forward_map_2018));
+            p_frb_gem = &frb_map_2018;
+            p_brf_gem = &brf_map_2018;
+            p_gem = &multi_0910_map_2018;
             break;
         default:
             throw std::range_error("Year cannot be found.");
     }
-    return out;
+    // initialize maps if needed
+    if (p_frb_gem->empty()) cache_frb_map(which_year);
+    if (p_brf_gem->empty()) cache_brf_map(which_year);
+    std::string key, value;
+    for (auto it {p_frb_gem->begin()}; it != p_frb_gem->end(); ++it) {
+        key = it->first;
+        value = it->second;
+        value = gem_m2m_scalar(value, *p_brf_gem);
+        value = gem_m2m_scalar(value, *p_frb_gem);
+        p_gem->insert(std::make_pair(key, value));
+    }
+}
+
+// cache multiple-stage mappings from version 10 to version 9
+void cache_multi_1009_map(const int& which_year)
+{
+    gem *p_frb_gem, *p_brf_gem, *p_gem;
+    switch(which_year)
+    {
+        case 2017:
+            p_frb_gem = &frb_map_2017;
+            p_brf_gem = &brf_map_2017;
+            p_gem = &multi_1009_map_2017;
+            break;
+        case 2018:
+            p_frb_gem = &frb_map_2018;
+            p_brf_gem = &brf_map_2018;
+            p_gem = &multi_1009_map_2018;
+            break;
+        default:
+            throw std::range_error("Year cannot be found.");
+    }
+    // initialze maps if needed
+    if (p_frb_gem->empty()) cache_frb_map(which_year);
+    if (p_brf_gem->empty()) cache_brf_map(which_year);
+    std::string key, value;
+    for (auto it {p_brf_gem->begin()}; it != p_brf_gem->end(); ++it) {
+        key = it->first;
+        value = it->second;
+        value = gem_m2m_scalar(value, *p_frb_gem);
+        value = gem_m2m_scalar(value, *p_brf_gem);
+        p_gem->insert(std::make_pair(key, value));
+    }
 }
 
 
 // helper for multi-stage mapping from version 9 to 10
-// one to many
-std::vector<std::string> gem_0910_multi_o2m(
+std::vector<std::string> gem_0910_multi(
     const std::vector<std::string>& dx,
-    const int& which_year
+    const int& which_year,
+    bool cache = true
     )
 {
     std::vector<std::string> out;
+    gem *p_gem;
     switch(which_year)
     {
         case 2017:
-            out = gem_frb_m2m(gem_brf_m2m(gem_frb_o2m(dx, 2017), 2017), 2017);
+            p_gem = &multi_0910_map_2017;
             break;
         case 2018:
-            out = gem_frb_m2m(gem_brf_m2m(gem_frb_o2m(dx, 2018), 2018), 2018);
+            p_gem = &multi_0910_map_2018;
             break;
         default:
             throw std::range_error("Year cannot be found.");
     }
-    return out;
-}
-// many to many
-std::vector<std::string> gem_0910_multi_m2m(
-    const std::vector<std::string>& dx,
-    const int& which_year
-    )
-{
-    std::vector<std::string> out;
-    switch(which_year)
-    {
-        case 2017:
-            out = gem_frb_m2m(gem_brf_m2m(gem_frb_m2m(dx, 2017), 2017), 2017);
-            break;
-        case 2018:
-            out = gem_frb_m2m(gem_brf_m2m(gem_frb_m2m(dx, 2018), 2018), 2018);
-            break;
-        default:
-            throw std::range_error("Year cannot be found.");
+    if (cache) {
+        if (p_gem->empty())
+            cache_multi_0910_map(which_year);
+        out = gem_m2m(dx, *p_gem);
+    } else {
+        out = gem_frb(gem_brf(gem_frb(dx, which_year), which_year), which_year);
     }
     return out;
 }
 
 // helper for multi-stage mapping from version 10 to 9
-// one to many
-std::vector<std::string> gem_1009_multi_o2m(
+std::vector<std::string> gem_1009_multi(
     const std::vector<std::string>& dx,
-    const int& which_year
+    const int& which_year,
+    bool cache = true
     )
 {
     std::vector<std::string> out;
+    gem *p_gem;
     switch(which_year)
     {
         case 2017:
-            out = gem_brf_m2m(gem_frb_m2m(gem_brf_o2m(dx, 2017), 2017), 2017);
+            p_gem = &multi_1009_map_2017;
             break;
         case 2018:
-            out = gem_brf_m2m(gem_frb_m2m(gem_brf_o2m(dx, 2018), 2018), 2018);
+            p_gem = &multi_1009_map_2018;
             break;
         default:
             throw std::range_error("Year cannot be found.");
     }
-    return out;
-}
-// many to many
-std::vector<std::string> gem_1009_multi_m2m(
-    const std::vector<std::string>& dx,
-    const int& which_year
-    )
-{
-    std::vector<std::string> out;
-    switch(which_year)
-    {
-        case 2017:
-            out = gem_frb_m2m(gem_brf_m2m(gem_frb_m2m(dx, 2017), 2017), 2017);
-            break;
-        case 2018:
-            out = gem_frb_m2m(gem_brf_m2m(gem_frb_m2m(dx, 2018), 2018), 2018);
-            break;
-        default:
-            throw std::range_error("Year cannot be found.");
+    if (cache) {
+        if (p_gem->empty())
+            cache_multi_1009_map(which_year);
+        out = gem_m2m(dx, *p_gem);
+    } else {
+        out = gem_brf(gem_frb(gem_brf(dx, which_year), which_year), which_year);
     }
     return out;
 }
 
 
-// one-to-many code mappings
+// the engine function
 // [[Rcpp::export]]
-std::vector<std::string> rcpp_gem_o2m(
+std::vector<std::string> rcpp_gem(
     const std::vector<std::string>& dx,
-    const int& which_map
-    )
-{
-    std::vector<std::string> out;
-    switch(which_map)
-    {
-        case 1709101:
-            // 2017, 9 to 10, forward
-            out = gem_o2m(dx, forward_map_2017);
-            break;
-
-        case 1709102:
-            // 2017, 9 to 10, reverse-backward
-            out = gem_o2m(dx, reverse_backward_map_2017);
-            break;
-
-        case 1709103:
-            // 2017, 9 to 10, forward + reverse-backward
-            out = gem_frb_o2m(dx, 2017);
-            break;
-
-        case 1709104:
-            // 2017, 9 to 10, 3 stages
-            out = gem_0910_multi_o2m(dx, 2017);
-            break;
-
-        case 1710091:
-            // 2017, 10 to 9, backward
-            out = gem_o2m(dx, forward_map_2017);
-            break;
-
-        case 1710092:
-            // 2017, 10 to 9, reverse-forward
-            out = gem_o2m(dx, reverse_forward_map_2017);
-            break;
-
-        case 1710093:
-            // 2017, 10 to 9, backward + reverse-forward
-            out = gem_brf_o2m(dx, 2017);
-            break;
-
-        case 1710094:
-            // 2017, 9 to 10, 3 stages
-            out = gem_1009_multi_o2m(dx, 2017);
-            break;
-
-        case 1809101:
-            // 2018, 9 to 10, forward
-            out = gem_o2m(dx, forward_map_2018);
-            break;
-
-        case 1809102:
-            // 2018, 9 to 10, reverse-backward
-            out = gem_o2m(dx, reverse_backward_map_2018);
-            break;
-
-        case 1809103:
-            // 2018, 9 to 10, forward + reverse-backward
-            out = gem_frb_o2m(dx, 2018);
-            break;
-
-        case 1809104:
-            // 2018, 9 to 10, 3 stages
-            out = gem_0910_multi_o2m(dx, 2018);
-            break;
-
-        case 1810091:
-            // 2018, 10 to 9, backward
-            out = gem_o2m(dx, backward_map_2018);
-            break;
-
-        case 1810092:
-            // 2018, 10 to 9, reverse-forward
-            out = gem_o2m(dx, reverse_forward_map_2018);
-            break;
-
-        case 1810093:
-            // 2018, 10 to 9, backward + reverse-forward
-            out = gem_brf_o2m(dx, 2018);
-            break;
-
-        case 1810094:
-            // 2018, 9 to 10, 3 stages
-            out = gem_1009_multi_o2m(dx, 2018);
-            break;
-
-        default:
-            // otherwise, throw error
-            throw std::range_error("Map cannot be found.");
-    }
-    return out;
-}
-
-// many-to-many code mappings
-// [[Rcpp::export]]
-std::vector<std::string> rcpp_gem_m2m(
-    const std::vector<std::string>& dx,
-    const int& which_map
+    const int& which_map,
+    bool cache = true
     )
 {
     std::vector<std::string> out;
@@ -469,17 +508,17 @@ std::vector<std::string> rcpp_gem_m2m(
 
         case 1709103:
             // 2017, 9 to 10, forward + reverse-backward
-            out = gem_frb_m2m(dx, 2017);
+            out = gem_frb(dx, 2017, cache);
             break;
 
         case 1709104:
             // 2017, 9 to 10, 3 stages
-            out = gem_0910_multi_m2m(dx, 2017);
+            out = gem_0910_multi(dx, 2017, cache);
             break;
 
         case 1710091:
             // 2017, 10 to 9, backward
-            out = gem_m2m(dx, backward_map_2017);
+            out = gem_m2m(dx, forward_map_2017);
             break;
 
         case 1710092:
@@ -489,12 +528,12 @@ std::vector<std::string> rcpp_gem_m2m(
 
         case 1710093:
             // 2017, 10 to 9, backward + reverse-forward
-            out = gem_brf_m2m(dx, 2017);
+            out = gem_brf(dx, 2017, cache);
             break;
 
         case 1710094:
             // 2017, 9 to 10, 3 stages
-            out = gem_1009_multi_m2m(dx, 2017);
+            out = gem_1009_multi(dx, 2017, cache);
             break;
 
         case 1809101:
@@ -509,12 +548,12 @@ std::vector<std::string> rcpp_gem_m2m(
 
         case 1809103:
             // 2018, 9 to 10, forward + reverse-backward
-            out = gem_frb_m2m(dx, 2018);
+            out = gem_frb(dx, 2018, cache);
             break;
 
         case 1809104:
             // 2018, 9 to 10, 3 stages
-            out = gem_0910_multi_m2m(dx, 2018);
+            out = gem_0910_multi(dx, 2018, cache);
             break;
 
         case 1810091:
@@ -529,12 +568,12 @@ std::vector<std::string> rcpp_gem_m2m(
 
         case 1810093:
             // 2018, 10 to 9, backward + reverse-forward
-            out = gem_brf_m2m(dx, 2018);
+            out = gem_brf(dx, 2018, cache);
             break;
 
         case 1810094:
             // 2018, 9 to 10, 3 stages
-            out = gem_1009_multi_m2m(dx, 2018);
+            out = gem_1009_multi(dx, 2018, cache);
             break;
 
         default:

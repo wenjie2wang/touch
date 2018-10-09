@@ -5,10 +5,6 @@ rcpp_strsplit <- function(x) {
     .Call('_touch_rcpp_strsplit', PACKAGE = 'touch', x)
 }
 
-rcpp_strcat <- function(x) {
-    .Call('_touch_rcpp_strcat', PACKAGE = 'touch', x)
-}
-
 cat_dx <- function(x) {
     .Call('_touch_cat_dx', PACKAGE = 'touch', x)
 }
@@ -17,12 +13,12 @@ cat_dx_pair <- function(a, b) {
     .Call('_touch_cat_dx_pair', PACKAGE = 'touch', a, b)
 }
 
-rcpp_gem_o2m <- function(dx, which_map) {
-    .Call('_touch_rcpp_gem_o2m', PACKAGE = 'touch', dx, which_map)
+rcpp_strcat <- function(x) {
+    .Call('_touch_rcpp_strcat', PACKAGE = 'touch', x)
 }
 
-rcpp_gem_m2m <- function(dx, which_map) {
-    .Call('_touch_rcpp_gem_m2m', PACKAGE = 'touch', dx, which_map)
+rcpp_gem <- function(dx, which_map, cache = TRUE) {
+    .Call('_touch_rcpp_gem', PACKAGE = 'touch', dx, which_map, cache)
 }
 
 init_gem_f17 <- function(keys, values) {

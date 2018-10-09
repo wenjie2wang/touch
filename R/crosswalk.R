@@ -30,7 +30,8 @@
 ##' @usage
 ##' icd_map(dx, from = 9, to = 10, year = 2018,
 ##'         method = c("gem", "reverse-gem", "both", "multi-stage"),
-##'         decimal = FALSE, nomatch = c('""', NA), simplify = TRUE, ...)
+##'         decimal = FALSE, nomatch = c('""', NA), simplify = TRUE,
+##'         cache = TRUE, ...)
 ##'
 ##' @param dx A character vector representing diagnosis codes of a number of
 ##'     patients.  Each element of the vector (character string) represents
@@ -60,6 +61,16 @@
 ##'     default value is \code{TRUE}.  If \code{FALSE}, all the translated
 ##'     codes will not be concartenated and a list of character vectors will
 ##'     be returned by the function.
+##' @param cache A logical value specifying whether to cache all the mappings
+##'     for \code{method = "both"} (both CMS GEM and its reverse mapping), and
+##'     \code{method = "multi-stage"} (the multiple stage procedure).  If
+##'     \code{TRUE} by default, the specified mapping will be generated,
+##'     cached and, applied to the translation.  If \code{FALSE}, the CMS GEM
+##'     and its reverse mapping will be used for translatation every time
+##'     without cache.  It is recommended to set \code{cache = TRUE} for
+##'     translation from ICD-9 to ICD-10.  For translation from ICD-10 to
+##'     ICD-9, the caching process only takes noticeable time (usually several
+##'     minutes at most) for the multi-stage procedure.
 ##' @param ... Other arguments for future usage.  A warning will be thrown out
 ##'     if any argument goes into \code{...} accidentally.
 ##'
@@ -127,15 +138,15 @@
 ##' icd_map(icd9codes, method = "multi-stage", decimal = TRUE, nomatch = NA)
 ##'
 ##' ## multi-stage process mapping ICD-10 to ICD-9
-##' icd_map(icd10codes, from = 10, to = 9, method = "multi-stage")
+##' icd_map(icd10codes, from = 10, to = 9,
+##'         method = "multi-stage", cache = FALSE)
 ##' icd_map(icd10codes, from = 10, to = 9, method = "multi-stage",
-##'         decimal = TRUE, nomatch = NA)
-##'
+##'         decimal = TRUE, nomatch = NA, cache = FALSE)
 ##' @export
 icd_map <- function(dx, from = 9, to = 10, year = 2018,
                     method = c("gem", "reverse-gem", "both", "multi-stage"),
                     decimal = FALSE, nomatch = c('""', NA), simplify = TRUE,
-                    ...)
+                    cache = TRUE, ...)
 {
     ## check from and to
     if (! from %in% c(9, 10))
@@ -165,9 +176,6 @@ icd_map <- function(dx, from = 9, to = 10, year = 2018,
     method <- match.arg(method)
     ## match the string for nomatch
     nomatch <- match.arg(as.character(nomatch), c('""', NA_character_))
-
-    ## check if dx contains any comma
-    many2many <- has_comma(dx)
 
     ## switch table for map: year number + from + to + method
 
@@ -201,11 +209,7 @@ icd_map <- function(dx, from = 9, to = 10, year = 2018,
     map_id <- as.integer(map_id)
 
     ## call the rcpp routine
-    res <- if (many2many) {
-               rcpp_gem_m2m(dx, map_id)
-           } else {
-               rcpp_gem_o2m(dx, map_id)
-           }
+    res <- rcpp_gem(dx, map_id, cache)
 
     ## replace empty strings with NA if nomath is NA
     if (is.na(nomatch))

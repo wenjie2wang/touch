@@ -6,7 +6,8 @@
 \usage{
 icd_map(dx, from = 9, to = 10, year = 2018,
         method = c("gem", "reverse-gem", "both", "multi-stage"),
-        decimal = FALSE, nomatch = c('""', NA), simplify = TRUE, ...)
+        decimal = FALSE, nomatch = c('""', NA), simplify = TRUE,
+        cache = TRUE, ...)
 }
 \arguments{
 \item{dx}{A character vector representing diagnosis codes of a number of
@@ -44,6 +45,17 @@ all the translated diagnosis codes from the original codes.  The
 default value is \code{TRUE}.  If \code{FALSE}, all the translated
 codes will not be concartenated and a list of character vectors will
 be returned by the function.}
+
+\item{cache}{A logical value specifying whether to cache all the mappings
+for \code{method = "both"} (both CMS GEM and its reverse mapping), and
+\code{method = "multi-stage"} (the multiple stage procedure).  If
+\code{TRUE} by default, the specified mapping will be generated,
+cached and, applied to the translation.  If \code{FALSE}, the CMS GEM
+and its reverse mapping will be used for translatation every time
+without cache.  It is recommended to set \code{cache = TRUE} for
+translation from ICD-9 to ICD-10.  For translation from ICD-10 to
+ICD-9, the caching process only takes noticeable time (usually several
+minutes at most) for the multi-stage procedure.}
 
 \item{...}{Other arguments for future usage.  A warning will be thrown out
 if any argument goes into \code{...} accidentally.}
@@ -119,10 +131,10 @@ icd_map(icd9codes, method = "multi-stage")
 icd_map(icd9codes, method = "multi-stage", decimal = TRUE, nomatch = NA)
 
 ## multi-stage process mapping ICD-10 to ICD-9
-icd_map(icd10codes, from = 10, to = 9, method = "multi-stage")
+icd_map(icd10codes, from = 10, to = 9,
+        method = "multi-stage", cache = FALSE)
 icd_map(icd10codes, from = 10, to = 9, method = "multi-stage",
-        decimal = TRUE, nomatch = NA)
-
+        decimal = TRUE, nomatch = NA, cache = FALSE)
 }
 \references{
 2017-ICD-10-CM-and-GEMs.  The U.S. Centers for Medicare & Medicaid

@@ -6,6 +6,7 @@
 
 typedef std::unordered_map<std::string, std::string> gem;
 
+
 // gem for year 2017
 gem forward_map_2017;
 gem backward_map_2017;
@@ -17,6 +18,7 @@ gem forward_map_2018;
 gem backward_map_2018;
 gem reverse_forward_map_2018;
 gem reverse_backward_map_2018;
+
 
 // generate dictionary
 inline gem dict_str(const std::vector<std::string>& keys,
