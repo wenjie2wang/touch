@@ -120,7 +120,8 @@ std::vector<std::string> cat_dx_pair(
     )
 {
     // a and b should have the same length
-    // TODO: add a simple test here
+    if (a.size() != b.size())
+        throw std::length_error("The input vectors must have same length.");
     std::vector<std::string> out;
     std::string tmp;
     for (size_t i {0}; i < a.size(); ++i) {
