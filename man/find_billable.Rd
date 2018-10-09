@@ -95,7 +95,7 @@ find_billable(icd10_major, version = 10, output = "tidy-data")
 (icd10_billable <- find_billable(icd10_major, version = 10, decimal = TRUE))
 
 ## compare the translation results
-icd_map(icd10_major, from = 10, to = 9)
+icd_map(icd10_major, from = 10, to = 9, nomatch = NA)
 icd_map(icd10_billable, from = 10, to = 9)
 }
 \seealso{
