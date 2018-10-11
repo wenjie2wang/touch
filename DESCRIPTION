@@ -26,6 +26,7 @@ Imports:
 License: GPL (>= 3)
 LazyData: yes
 SysDataCompression: xz
+SystemRequirements: C++11
 URL: https://github.com/LiYanStat/touch
 BugReports: https://github.com/LiYanStat/touch/issues
 Encoding: UTF-8
