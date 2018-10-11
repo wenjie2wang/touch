@@ -1,6 +1,7 @@
 # R Package touch
 
 [![CRAN_Status_Badge][cranVersion]][cran]
+[![Build Status][travis-master]][travis]
 
 
 The package **touch** (**T**ools **o**f **u**nilization and **c**ost in
@@ -25,7 +26,12 @@ You may install the released version from [CRAN][cran].
 install.packages("touch")
 ```
 
-Or you may install the latest version under development with the help of
+
+## Development
+
+[![Build Status][travis-master]][travis]
+
+You may install the latest version under development with the help of
 **remotes** (or **devtools**) as follows:
 
 ```R
@@ -50,4 +56,7 @@ FITNESS FOR A PARTICULAR PURPOSE.
 
 [cranVersion]: http://www.r-pkg.org/badges/version/touch
 [cran]: https://CRAN.R-project.org/package=touch
+[travis]: https://travis-ci.org/wenjie2wang/touch
+[travis-master]: https://travis-ci.org/wenjie2wang/touch.svg?branch=master
+[travis-dev]: https://travis-ci.org/wenjie2wang/touch.svg?branch=dev
 [gpl]: http://www.gnu.org/licenses/
