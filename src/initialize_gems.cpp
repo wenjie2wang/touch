@@ -2,6 +2,7 @@
 #include <Rcpp.h>
 
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 typedef std::unordered_map<std::string, std::string> gem;
