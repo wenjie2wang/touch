@@ -1,6 +1,6 @@
 Package: touch
 Title: Tools of Utilization and Cost in Healthcare
-Version: 0.1-4.9004
+Version: 0.1-4
 Date: 2018-10-12
 Authors@R: c(
     person(given = "Yan", family = "Li",
