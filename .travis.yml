@@ -2,14 +2,6 @@ language: r
 dist: trusty
 cache: packages
 sudo: false
-env:
-  - CXX=g++-7
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-7
 r:
   - oldrel
   - release
