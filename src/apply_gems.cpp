@@ -9,7 +9,7 @@
 
 
 typedef std::unordered_map<std::string, std::string> gem;
-
+typedef std::unordered_map<std::string,std::string>::iterator gem_it;
 
 // gem for year 2017
 extern gem forward_map_2017;
@@ -182,16 +182,15 @@ void cache_frb_map(const int& year)
             throw std::range_error("Year cannot be found.");
     }
     std::vector<std::string> all_keys, values;
-    for (auto i { f_gem.begin() };
-         i != f_gem.end(); ++i) {
+    for (gem_it i { f_gem.begin() }; i != f_gem.end(); ++i) {
         all_keys.push_back(i->first);
     }
-    for (auto i { rb_gem.begin() };
-         i != rb_gem.end(); ++i) {
+    for (gem_it i { rb_gem.begin() }; i != rb_gem.end(); ++i) {
         all_keys.push_back(i->first);
     }
     all_keys = uni_sort(all_keys);
-    for (auto it {all_keys.begin()}; it != all_keys.end(); ++it) {
+    for (std::vector<std::string>::iterator it { all_keys.begin() };
+         it != all_keys.end(); ++it) {
         values.clear();
         values.push_back(f_gem[*it]);
         values.push_back(rb_gem[*it]);
@@ -220,16 +219,17 @@ void cache_brf_map(const int& year)
             throw std::range_error("Year cannot be found.");
     }
     std::vector<std::string> all_keys, values;
-    for (auto i { b_gem.begin() };
+    for (gem_it i { b_gem.begin() };
          i != b_gem.end(); ++i) {
         all_keys.push_back(i->first);
     }
-    for (auto i { rf_gem.begin() };
+    for (gem_it i { rf_gem.begin() };
          i != rf_gem.end(); ++i) {
         all_keys.push_back(i->first);
     }
     all_keys = uni_sort(all_keys);
-    for (auto it {all_keys.begin()}; it != all_keys.end(); ++it) {
+    for (std::vector<std::string>::iterator it { all_keys.begin() };
+         it != all_keys.end(); ++it) {
         values.clear();
         values.push_back(b_gem[*it]);
         values.push_back(rf_gem[*it]);
@@ -384,7 +384,7 @@ void cache_multi_0910_map(const int& which_year)
     if (p_frb_gem->empty()) cache_frb_map(which_year);
     if (p_brf_gem->empty()) cache_brf_map(which_year);
     std::string key, value;
-    for (auto it {p_frb_gem->begin()}; it != p_frb_gem->end(); ++it) {
+    for (gem_it it { p_frb_gem->begin() }; it != p_frb_gem->end(); ++it) {
         key = it->first;
         value = it->second;
         value = gem_m2m_scalar(value, *p_brf_gem);
@@ -416,7 +416,7 @@ void cache_multi_1009_map(const int& which_year)
     if (p_frb_gem->empty()) cache_frb_map(which_year);
     if (p_brf_gem->empty()) cache_brf_map(which_year);
     std::string key, value;
-    for (auto it {p_brf_gem->begin()}; it != p_brf_gem->end(); ++it) {
+    for (gem_it it {p_brf_gem->begin()}; it != p_brf_gem->end(); ++it) {
         key = it->first;
         value = it->second;
         value = gem_m2m_scalar(value, *p_frb_gem);
