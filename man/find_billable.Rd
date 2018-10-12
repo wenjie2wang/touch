@@ -5,7 +5,7 @@
 \title{Find Billable ICD Codes from CMS GEMs}
 \usage{
 find_billable(dx, version = 10, year = 2018,
-              aggressive_match = TRUE, decimal = FALSE,
+              match_all = TRUE, decimal = FALSE,
               output = c("character", "list", "tidy-data"), ...)
 }
 \arguments{
@@ -21,14 +21,14 @@ ICD-10 codes.}
 currently available options are \code{2017} and \code{2018}.  By
 default, 2018 CMS GEMs is used.}
 
-\item{aggressive_match}{A logical value specifying the aggressiveness for
-finding all billable codes based on the input diagnosis category.  If
-\code{TRUE} (the default), the function will add the regular
-expression \code{"[[[[:alnum:]]{1,4}]]"} to the tail of diagnosis
-category so that all the billable diagnosis codes under the given
-category will be matched.  If \code{FALSE}, the function will add the
-regular experssion \code{"[[:alnum:]]"} recursively at most four times
-until any set of billable codes are matched.}
+\item{match_all}{A logical value specifying the strategy for finding
+billable codes based on the input diagnosis category.  If \code{TRUE}
+(the default), the function will add the regular expression
+\code{"[[[[:alnum:]]{1,4}]]"} to the tail of diagnosis category so
+that all the billable diagnosis codes under the given category will be
+matched.  If \code{FALSE}, the function will add the regular
+experssion \code{"[[:alnum:]]"} repeatedly at most four times until
+any set of billable codes are matched.}
 
 \item{decimal}{A logical value.  If \code{TRUE}, the diagnosis codes would
 be returned with decimal points.  The default is \code{FALSE}.}
@@ -77,7 +77,7 @@ find_billable(icd9_major, version = 9)
 
 ## find the billable codes right under the major category
 (icd9_billable <- find_billable(icd9_major, version = 9,
-                                aggressive_match = FALSE))
+                                match_all = FALSE))
 
 ## compare the translation results
 icd_map(icd9_major, nomatch = NA)
@@ -100,4 +100,7 @@ icd_map(icd10_billable, from = 10, to = 9)
 }
 \seealso{
 icd_map
+}
+\author{
+Wenjie Wang <wenjie.2.wang@uconn.edu>
 }

@@ -1,16 +1,16 @@
 ##' Translatation of ICD Codes by General Equivalence Mappings (GEMs)
 ##'
-##' This function provides an open-source implementation in R in addition to
-##' the Mapping tool developed by the Agency for Healthcare Research and
-##' Quality (AHRQ).  It translates the ICD diagnosis codes to the a different
-##' version by the General Equivalence Mappings (GEMs) developed by the
-##' National Center for Health Statistics, Centers for Medicare and Medicaid
-##' Services (CMS), AHIMA, the American Hospital Association, and 3M Health
-##' Information Systems.  The CMS GEMs currently consist of the forward
-##' mapping from ICD-9 codes to ICD-10 codes and the backward mapping from
-##' ICD-10 codes to ICD-9 codes.  In addition to these two mappings, the
-##' Agency for Healthcare Research and Quality (AHRQ) also proposed
-##' translation by using the reverse mappings.
+##' This function provides an open-source implementation in R similar to the
+##' Mapping tool developed by the Agency for Healthcare Research and Quality
+##' (AHRQ).  It translates the ICD diagnosis codes to the a different version
+##' by the General Equivalence Mappings (GEMs) developed by the National
+##' Center for Health Statistics, Centers for Medicare and Medicaid Services
+##' (CMS), AHIMA, the American Hospital Association, and 3M Health Information
+##' Systems.  The CMS GEMs currently consist of the forward mapping from ICD-9
+##' codes to ICD-10 codes and the backward mapping from ICD-10 codes to ICD-9
+##' codes.  In addition to these two mappings, the Agency for Healthcare
+##' Research and Quality (AHRQ) also proposed translation by using the reverse
+##' mappings and multi-stage procedure.
 ##'
 ##' Taking the translation from ICD-9 codes to ICD-10 codes as an example, the
 ##' procedure is elaborated as follows: In stage one, the input ICD-9 codes
@@ -45,7 +45,8 @@
 ##' @param method A character string specifying the translateion method.  The
 ##'     available options are \code{"gem"} for CMS GEM, \code{"reverse-gem"}
 ##'     for the reverse of CMS GEM, \code{"both"} for both GEM and reverse
-##'     GEM, \code{"multi-stage"} for multiple stage procedure.
+##'     GEM, \code{"multi-stage"} for multiple stage procedure.  See Section
+##'     Details for more detailed description of the procedure.
 ##' @param year A numeric value specifying the year of the CMS GEMs.  The
 ##'     currently available options are \code{2017} and \code{2018}.  By
 ##'     default, 2018 CMS GEMs is used.
@@ -81,13 +82,13 @@
 ##' @param ... Other arguments for future usage.  A warning will be thrown out
 ##'     if any argument goes into \code{...} accidentally.
 ##'
-##' @author Wenjie Wang <wenjie.2.wang@uconn.edu>
-##'
 ##' @return A character vector of the same length with the input vector will
 ##'     be returned by default or if \code{output = "charactor"}.  A list of
 ##'     character vectors will be returned if \code{output = "list"}; A data
 ##'     frame in tidy-format will be returned if \code{output = "tidy-data"}.
 ##'     See argument \code{output} for details.
+##'
+##' @author Wenjie Wang <wenjie.2.wang@uconn.edu>
 ##'
 ##' @references
 ##'
@@ -280,20 +281,20 @@ icd_map <- function(dx, from = 9, to = 10, year = 2018,
 ##'
 ##' @usage
 ##' find_billable(dx, version = 10, year = 2018,
-##'               aggressive_match = TRUE, decimal = FALSE,
+##'               match_all = TRUE, decimal = FALSE,
 ##'               output = c("character", "list", "tidy-data"), ...)
 ##'
 ##' @param version A numeric value specifying the version of the diagnosis
 ##'     codes that should be either \code{9} for ICD-9 codes or \code{10} for
 ##'     ICD-10 codes.
-##' @param aggressive_match A logical value specifying the aggressiveness for
-##'     finding all billable codes based on the input diagnosis category.  If
-##'     \code{TRUE} (the default), the function will add the regular
-##'     expression \code{"[[[[:alnum:]]{1,4}]]"} to the tail of diagnosis
-##'     category so that all the billable diagnosis codes under the given
-##'     category will be matched.  If \code{FALSE}, the function will add the
-##'     regular experssion \code{"[[:alnum:]]"} recursively at most four times
-##'     until any set of billable codes are matched.
+##' @param match_all A logical value specifying the strategy for finding
+##'     billable codes based on the input diagnosis category.  If \code{TRUE}
+##'     (the default), the function will add the regular expression
+##'     \code{"[[[[:alnum:]]{1,4}]]"} to the tail of diagnosis category so
+##'     that all the billable diagnosis codes under the given category will be
+##'     matched.  If \code{FALSE}, the function will add the regular
+##'     experssion \code{"[[:alnum:]]"} repeatedly at most four times until
+##'     any set of billable codes are matched.
 ##'
 ##' @inheritParams icd_map
 ##'
@@ -302,6 +303,8 @@ icd_map <- function(dx, from = 9, to = 10, year = 2018,
 ##'     character vectors will be returned if \code{output = "list"}; A data
 ##'     frame in tidy-format will be returned if \code{output = "tidy-data"}.
 ##'     See argument \code{output} for details.
+##'
+##' @author Wenjie Wang <wenjie.2.wang@uconn.edu>
 ##'
 ##' @seealso icd_map
 ##'
@@ -316,7 +319,7 @@ icd_map <- function(dx, from = 9, to = 10, year = 2018,
 ##'
 ##' ## find the billable codes right under the major category
 ##' (icd9_billable <- find_billable(icd9_major, version = 9,
-##'                                 aggressive_match = FALSE))
+##'                                 match_all = FALSE))
 ##'
 ##' ## compare the translation results
 ##' icd_map(icd9_major, nomatch = NA)
@@ -338,7 +341,7 @@ icd_map <- function(dx, from = 9, to = 10, year = 2018,
 ##' icd_map(icd10_billable, from = 10, to = 9)
 ##' @export
 find_billable <- function(dx, version = 10, year = 2018,
-                          aggressive_match = TRUE, decimal = FALSE,
+                          match_all = TRUE, decimal = FALSE,
                           output = c("character", "list", "tidy-data"),
                           ...)
 {
@@ -360,10 +363,10 @@ find_billable <- function(dx, version = 10, year = 2018,
     dx <- toupper(remove_dot(trimws(dx)))
 
     ## internal engine function
-    regex_billable <- function(x, pool, aggressive_match) {
+    regex_billable <- function(x, pool, match_all) {
         if (is.na(x)) return(x)
         if (x %in% pool) return(x)
-        if (aggressive_match) {
+        if (match_all) {
             out <- grep(paste0("^", x, "[[:alnum:]]{1,4}$"),
                         pool, value = TRUE)
             if (length(out) > 0) return(out)
@@ -384,7 +387,7 @@ find_billable <- function(dx, version = 10, year = 2018,
         map_rb <- get(sprintf("reverse_backward_map_%d", year))
         icd9_billable <- unique(c(map_f$icd9_codes, map_rb$icd9_codes))
         res <- lapply(dx, regex_billable, pool = icd9_billable,
-                      aggressive_match = aggressive_match)
+                      match_all = match_all)
         ## add decimal if needed
         if (decimal)
             res <- lapply(res, insert_dot, version = 9)
@@ -393,7 +396,7 @@ find_billable <- function(dx, version = 10, year = 2018,
         map_rf <- get(sprintf("reverse_forward_map_%d", year))
         icd10_billable <- unique(c(map_b$icd10_codes, map_rf$icd10_codes))
         res <- lapply(dx, regex_billable, pool = icd10_billable,
-                      aggressive_match = aggressive_match)
+                      match_all = match_all)
         ## add decimal if needed
         if (decimal)
             res <- lapply(res, insert_dot, version = 10)

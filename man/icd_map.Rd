@@ -29,7 +29,8 @@ default, 2018 CMS GEMs is used.}
 \item{method}{A character string specifying the translateion method.  The
 available options are \code{"gem"} for CMS GEM, \code{"reverse-gem"}
 for the reverse of CMS GEM, \code{"both"} for both GEM and reverse
-GEM, \code{"multi-stage"} for multiple stage procedure.}
+GEM, \code{"multi-stage"} for multiple stage procedure.  See Section
+Details for more detailed description of the procedure.}
 
 \item{decimal}{A logical value.  If \code{TRUE}, the diagnosis codes would
 be returned with decimal points.  The default is \code{FALSE}.}
@@ -75,17 +76,17 @@ A character vector of the same length with the input vector will
     See argument \code{output} for details.
 }
 \description{
-This function provides an open-source implementation in R in addition to
-the Mapping tool developed by the Agency for Healthcare Research and
-Quality (AHRQ).  It translates the ICD diagnosis codes to the a different
-version by the General Equivalence Mappings (GEMs) developed by the
-National Center for Health Statistics, Centers for Medicare and Medicaid
-Services (CMS), AHIMA, the American Hospital Association, and 3M Health
-Information Systems.  The CMS GEMs currently consist of the forward
-mapping from ICD-9 codes to ICD-10 codes and the backward mapping from
-ICD-10 codes to ICD-9 codes.  In addition to these two mappings, the
-Agency for Healthcare Research and Quality (AHRQ) also proposed
-translation by using the reverse mappings.
+This function provides an open-source implementation in R similar to the
+Mapping tool developed by the Agency for Healthcare Research and Quality
+(AHRQ).  It translates the ICD diagnosis codes to the a different version
+by the General Equivalence Mappings (GEMs) developed by the National
+Center for Health Statistics, Centers for Medicare and Medicaid Services
+(CMS), AHIMA, the American Hospital Association, and 3M Health Information
+Systems.  The CMS GEMs currently consist of the forward mapping from ICD-9
+codes to ICD-10 codes and the backward mapping from ICD-10 codes to ICD-9
+codes.  In addition to these two mappings, the Agency for Healthcare
+Research and Quality (AHRQ) also proposed translation by using the reverse
+mappings and multi-stage procedure.
 }
 \details{
 Taking the translation from ICD-9 codes to ICD-10 codes as an example, the
