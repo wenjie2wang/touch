@@ -12,6 +12,7 @@
 ^GRTAGS$
 ^GTAGS$
 ^TAGS$
+^LICENSE$
 ^\.travis\.yml$
 ^\.git$
 ^\.\#
