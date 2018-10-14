@@ -54,9 +54,9 @@ WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE.
 
 
-[cranVersion]: http://www.r-pkg.org/badges/version/touch
+[cranVersion]: https://www.r-pkg.org/badges/version/touch
 [cran]: https://CRAN.R-project.org/package=touch
 [travis]: https://travis-ci.org/wenjie2wang/touch
 [travis-master]: https://travis-ci.org/wenjie2wang/touch.svg?branch=master
 [travis-dev]: https://travis-ci.org/wenjie2wang/touch.svg?branch=dev
-[gpl]: http://www.gnu.org/licenses/
+[gpl]: https://www.gnu.org/licenses/
