@@ -1,21 +1,15 @@
-objects := $(wildcard R/*.R) DESCRIPTION
+objects := $(wildcard R/*.R) $(wildcard src/*.[hc]pp) DESCRIPTION
 version := $(shell grep "Version" DESCRIPTION | awk '{print $$NF}')
 pkg := $(shell grep "Package" DESCRIPTION | awk '{print $$NF}')
 tar := $(pkg)_$(version).tar.gz
 checkLog := $(pkg).Rcheck/00check.log
 # tests := $(wildcard tests/testthat/*.R)
-# rmd := vignettes/$(pkg)-intro.Rmd
-# vignettes := vignettes/$(pkg)-intro.html
-
 
 .PHONY: check
 check: $(checkLog)
 
 .PHONY: build
 build: $(tar)
-
-# .PHONY: preview
-# preview: $(vignettes)
 
 $(tar): $(objects)
 	@$(MAKE) -s updateTimestamp
@@ -29,11 +23,15 @@ $(checkLog): $(tar)
 install: $(tar)
 	R CMD INSTALL $(tar)
 
+# pkgdown
+.PHONY: pkgdown
+pkgdown:
+	Rscript -e "library(methods); pkgdown::build_site();"
+
 ## update date in DESCRIPTION
 .PHONY: updateTimestamp
 updateTimestamp:
-	dt=$$(date +"%Y-%m-%d");\
-	sed -i "s/Date: [0-9]\{4\}-[0-9]\{1,2\}-[0-9]\{1,2\}/Date: $$dt/" DESCRIPTION;
+	@bash misc/update_timestamp.sh
 
 ## make tags
 .PHONY: TAGS
