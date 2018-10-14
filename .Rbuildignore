@@ -6,6 +6,7 @@
 ^inst/ahrq/downloads$
 ^Makefile$
 ^working$
+^docs$
 ^misc$
 ^GPATH$
 ^GRTAGS$
