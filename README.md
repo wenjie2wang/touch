@@ -34,9 +34,9 @@ You may install the latest version under development with the help of
 
 ```R
 if (! require(remotes)) install.packages("remotes")
-remotes::install_github("LiYanStat/touch")
+remotes::install_github("wenjie2wang/touch")
 ## or use devtools if it is installed
-## devtools::install_github("LiYanStat/touch")
+## devtools::install_github("wenjie2wang/touch")
 ```
 
 
