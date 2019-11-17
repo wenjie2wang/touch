@@ -240,7 +240,7 @@ codes.</p>
 <p>The flags of the GEMs are not exported from this function.  For codes with
 positive combination flags, the combination of the converted ICD-10 codes is
 indicated by the plus sign <code><a href='https://rdrr.io/r/base/Arithmetic.html'>"+"</a></code>.  For example, the ICD-9 code
-<code>"24591"</code> can be translated by 2018 GEMs to ICD-10 code,
+<code>"24951"</code> can be translated by 2018 GEMs to ICD-10 code,
 <code>"E0839"</code>, <code>"E0939"</code>, or one of the codes from <code>("E08311",
 "E08319", "E0836", "E09311" "E09319", "E0936")</code> with "E0865".  The plus sign
 in the output, such as <code>"E08311+E0865"</code>, is used to indicate the
@@ -371,8 +371,9 @@ Accessed 28 September, 2018.</p>
 #&gt; [5] NA                                                                                    
 #&gt; [6] "728.12"                                                                              </div><div class='input'>
 <span class='co'>### For codes with positive combination flags</span>
-<span class='fu'>icd_map</span>(<span class='st'>"24591"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"list"</span>)</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] ""
+<span class='fu'>icd_map</span>(<span class='st'>"24951"</span>, <span class='kw'>output</span> <span class='kw'>=</span> <span class='st'>"list"</span>)</div><div class='output co'>#&gt; [[1]]
+#&gt; [1] "E0839"        "E0939"        "E08311+E0865" "E08319+E0865" "E0836+E0865" 
+#&gt; [6] "E09311+E0865" "E09319+E0865" "E0936+E0865" 
 #&gt; </div><div class='input'>## where the "+" signs indicate the code combinations
 </div></pre>
   </div>

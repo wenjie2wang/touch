@@ -43,5 +43,5 @@ icd_map(icd10codes, from = 10, to = 9, method = "multi-stage",
         decimal = TRUE, nomatch = NA, cache = FALSE)
 
 ### For codes with positive combination flags
-icd_map("24591", output = "list")
+icd_map("24951", output = "list")
 ## where the "+" signs indicate the code combinations

@@ -106,7 +106,7 @@ codes.
 The flags of the GEMs are not exported from this function.  For codes with
 positive combination flags, the combination of the converted ICD-10 codes is
 indicated by the plus sign \code{"+"}.  For example, the ICD-9 code
-\code{"24591"} can be translated by 2018 GEMs to ICD-10 code,
+\code{"24951"} can be translated by 2018 GEMs to ICD-10 code,
 \code{"E0839"}, \code{"E0939"}, or one of the codes from \code{("E08311",
 "E08319", "E0836", "E09311" "E09319", "E0936")} with "E0865".  The plus sign
 in the output, such as \code{"E08311+E0865"}, is used to indicate the
@@ -158,7 +158,7 @@ icd_map(icd10codes, from = 10, to = 9, method = "multi-stage",
         decimal = TRUE, nomatch = NA, cache = FALSE)
 
 ### For codes with positive combination flags
-icd_map("24591", output = "list")
+icd_map("24951", output = "list")
 ## where the "+" signs indicate the code combinations
 }
 \references{
