@@ -1,12 +1,13 @@
 Package: touch
 Title: Tools of Utilization and Cost in Healthcare
-Version: 0.1-4
-Date: 2018-10-13
+Version: 0.1-5
+Date: 2019-11-17
 Authors@R: c(
     person(given = "Wenjie", family = "Wang", role = c("aut", "cre"),
            email = "wenjie.2.wang@uconn.edu",
            comment = c(ORCID = "0000-0003-0363-3180")),
-    person(given = "Yan", family = "Li", role = "aut"),
+    person(given = "Yan", family = "Li", role = "aut",
+           comment = c(ORCID = "0000-0003-4401-7296")),
     person(given = "Jun", family = "Yan", role = "aut")
     )
 Description: R implementation of the software tools developed in the H-CUP
@@ -30,4 +31,3 @@ SystemRequirements: C++11
 URL: https://github.com/wenjie2wang/touch
 BugReports: https://github.com/wenjie2wang/touch/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.0
