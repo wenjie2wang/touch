@@ -1,3 +1,9 @@
+# touch 0.1-5
+
+## Minor changes
+
+* Added indication for converting ICD codes with positive combination flags.
+
 # touch 0.1-4
 
 ## New features
