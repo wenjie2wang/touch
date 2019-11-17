@@ -1,6 +1,7 @@
 *.Rproj.user
 *.Rproj
 .Rhistory
+.clang_complete
 *.tar.gz
 *.so
 *.o

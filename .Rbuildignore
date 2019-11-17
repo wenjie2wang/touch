@@ -14,6 +14,7 @@
 ^TAGS$
 ^LICENSE$
 ^\.travis\.yml$
+^\.clang_complete$
 ^\.git$
 ^\.\#
 ^\#
