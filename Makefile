@@ -12,8 +12,11 @@ check: $(checkLog)
 build: $(tar)
 
 $(tar): $(objects)
-	@$(MAKE) -s updateTimestamp
-	Rscript -e "library(methods); devtools::document();";
+	@$(RM) -rf src/RcppExports.cpp R/RcppExports.R
+	@Rscript -e "library(methods);" \
+	-e "Rcpp::compileAttributes()" \
+	-e "devtools::document();";
+	@$(MAKE) updateTimestamp
 	R CMD build --resave-data .
 
 $(checkLog): $(tar)
@@ -37,6 +40,7 @@ updateTimestamp:
 .PHONY: TAGS
 TAGS:
 	Rscript -e "utils::rtags(path = 'R', ofile = 'TAGS')"
+	gtags
 
 .PHONY: clean
 clean:
