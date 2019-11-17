@@ -76,19 +76,20 @@ A character vector of the same length with the input vector will
     See argument \code{output} for details.
 }
 \description{
-This function provides an open-source implementation in R similar to the
-Mapping tool developed by the Agency for Healthcare Research and Quality
-(AHRQ).  It translates the ICD diagnosis codes to the a different version
-by the General Equivalence Mappings (GEMs) developed by the National
-Center for Health Statistics, Centers for Medicare and Medicaid Services
-(CMS), AHIMA, the American Hospital Association, and 3M Health Information
-Systems.  The CMS GEMs currently consist of the forward mapping from ICD-9
-codes to ICD-10 codes and the backward mapping from ICD-10 codes to ICD-9
-codes.  In addition to these two mappings, the Agency for Healthcare
-Research and Quality (AHRQ) also proposed translation by using the reverse
-mappings and multi-stage procedure.
+An open-source implementation in R similar to the Mapping tool developed by
+the Agency for Healthcare Research and Quality (AHRQ).
 }
 \details{
+This function aims to efficiently translates the ICD diagnosis codes to the
+a different version by the General Equivalence Mappings (GEMs) developed by
+the National Center for Health Statistics, Centers for Medicare and Medicaid
+Services (CMS), AHIMA, the American Hospital Association, and 3M Health
+Information Systems.  The CMS GEMs currently consist of the forward mapping
+from ICD-9 codes to ICD-10 codes and the backward mapping from ICD-10 codes
+to ICD-9 codes.  In addition to these two mappings, the Agency for
+Healthcare Research and Quality (AHRQ) also proposed translation by using
+the reverse mappings and multi-stage procedure.
+
 Taking the translation from ICD-9 codes to ICD-10 codes as an example, the
 procedure is elaborated as follows: In stage one, the input ICD-9 codes
 are mapped to ICD-10 codes using the ICD-9 to ICD-10 forward map as well
@@ -101,6 +102,15 @@ backward map as well as the reverse of the forward map; In stage three, it
 applies the forward map and reverse-backward map used in stage one again
 to the ICD-9 codes from the stage two and return the resulting ICD-10
 codes.
+
+The flags of the GEMs are not exported from this function.  For codes with
+positive combination flags, the combination of the converted ICD-10 codes is
+indicated by the plus sign \code{"+"}.  For example, the ICD-9 code
+\code{"24591"} can be translated by 2018 GEMs to ICD-10 code,
+\code{"E0839"}, \code{"E0939"}, or one of the codes from \code{("E08311",
+"E08319", "E0836", "E09311" "E09319", "E0936")} with "E0865".  The plus sign
+in the output, such as \code{"E08311+E0865"}, is used to indicate the
+combination of \code{"E08311"} and \code{"E0865"}.
 }
 \examples{
 library(touch)
@@ -146,6 +156,10 @@ icd_map(icd10codes, from = 10, to = 9,
         method = "multi-stage", cache = FALSE)
 icd_map(icd10codes, from = 10, to = 9, method = "multi-stage",
         decimal = TRUE, nomatch = NA, cache = FALSE)
+
+### For codes with positive combination flags
+icd_map("24591", output = "list")
+## where the "+" signs indicate the code combinations
 }
 \references{
 2017-ICD-10-CM-and-GEMs.  The U.S. Centers for Medicare & Medicaid

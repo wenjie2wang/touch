@@ -1,16 +1,34 @@
+##
+## R package touch by Wenjie Wang, Yan Li, and Jun Yan
+## Copyright (C) 2015-2019
+##
+## This file is part of the R package touch.
+##
+## The R package touch is free software: You can redistribute it and/or
+## modify it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or any later
+## version (at your option). See the GNU General Public License at
+## <https://www.gnu.org/licenses/> for details.
+##
+## The R package touch is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+##
+
 ##' Translatation of ICD Codes by General Equivalence Mappings (GEMs)
 ##'
-##' This function provides an open-source implementation in R similar to the
-##' Mapping tool developed by the Agency for Healthcare Research and Quality
-##' (AHRQ).  It translates the ICD diagnosis codes to the a different version
-##' by the General Equivalence Mappings (GEMs) developed by the National
-##' Center for Health Statistics, Centers for Medicare and Medicaid Services
-##' (CMS), AHIMA, the American Hospital Association, and 3M Health Information
-##' Systems.  The CMS GEMs currently consist of the forward mapping from ICD-9
-##' codes to ICD-10 codes and the backward mapping from ICD-10 codes to ICD-9
-##' codes.  In addition to these two mappings, the Agency for Healthcare
-##' Research and Quality (AHRQ) also proposed translation by using the reverse
-##' mappings and multi-stage procedure.
+##' An open-source implementation in R similar to the Mapping tool developed by
+##' the Agency for Healthcare Research and Quality (AHRQ).
+##'
+##' This function aims to efficiently translates the ICD diagnosis codes to the
+##' a different version by the General Equivalence Mappings (GEMs) developed by
+##' the National Center for Health Statistics, Centers for Medicare and Medicaid
+##' Services (CMS), AHIMA, the American Hospital Association, and 3M Health
+##' Information Systems.  The CMS GEMs currently consist of the forward mapping
+##' from ICD-9 codes to ICD-10 codes and the backward mapping from ICD-10 codes
+##' to ICD-9 codes.  In addition to these two mappings, the Agency for
+##' Healthcare Research and Quality (AHRQ) also proposed translation by using
+##' the reverse mappings and multi-stage procedure.
 ##'
 ##' Taking the translation from ICD-9 codes to ICD-10 codes as an example, the
 ##' procedure is elaborated as follows: In stage one, the input ICD-9 codes
@@ -24,6 +42,15 @@
 ##' applies the forward map and reverse-backward map used in stage one again
 ##' to the ICD-9 codes from the stage two and return the resulting ICD-10
 ##' codes.
+##'
+##' The flags of the GEMs are not exported from this function.  For codes with
+##' positive combination flags, the combination of the converted ICD-10 codes is
+##' indicated by the plus sign \code{"+"}.  For example, the ICD-9 code
+##' \code{"24591"} can be translated by 2018 GEMs to ICD-10 code,
+##' \code{"E0839"}, \code{"E0939"}, or one of the codes from \code{("E08311",
+##' "E08319", "E0836", "E09311" "E09319", "E0936")} with "E0865".  The plus sign
+##' in the output, such as \code{"E08311+E0865"}, is used to indicate the
+##' combination of \code{"E08311"} and \code{"E0865"}.
 ##'
 ##' @name icd_map
 ##'
@@ -110,51 +137,7 @@
 ##' Accessed 28 September, 2018.
 ##'
 ##' @seealso \code{\link{find_billable}}
-##'
-##' @examples
-##' library(touch)
-##'
-##' ### some random ICD-9 and ICD-10 codes
-##' icd9codes <- c("0011", "001.1", "316", "29383", "E9808", "V90")
-##' icd10codes <- c("F0390", "F0630", "F54", "F30.13", "A010", "M61019")
-##'
-##' ### forward mapping from ICD-9 to ICD-10
-##' icd_map(icd9codes)
-##' icd_map(icd9codes, decimal = TRUE, nomatch = NA)
-##'
-##' ### backward mapping from ICD-10 to ICD-9
-##' icd_map(icd10codes, from = 10, to = 9)
-##' icd_map(icd10codes, from = 10, to = 9, nomatch = NA, output = "list")
-##' icd_map(icd10codes, from = 10, to = 9,
-##'         decimal = TRUE, nomatch = NA, output = "tidy")
-##'
-##' ### reverse-backward mapping from ICD-9 to ICD-10
-##' icd_map(icd9codes, method = "reverse-gem")
-##' icd_map(icd9codes, method = "reverse", decimal = TRUE, nomatch = NA)
-##'
-##' ### reverse-forward mapping from ICD-10 to ICD-9
-##' icd_map(icd10codes, from = 10, to = 9, method = "reverse-gem")
-##' icd_map(icd10codes, from = 10, to = 9, method = "reverse",
-##'         decimal = TRUE, nomatch = NA)
-##'
-##' ### forward and reverse-backward mapping from ICD-9 to ICD-10
-##' icd_map(icd9codes, method = "both")
-##' icd_map(icd9codes, method = "both", decimal = TRUE, nomatch = NA)
-##'
-##' ### backward and reverse-forward mapping from ICD-10 to ICD-9
-##' icd_map(icd10codes, from = 10, to = 9, method = "both")
-##' icd_map(icd10codes, from = 10, to = 9, method = "both",
-##'         decimal = TRUE, nomatch = NA)
-##'
-##' ### multi-stage process mapping ICD-9 to ICD-10
-##' icd_map(icd9codes, method = "multi-stage")
-##' icd_map(icd9codes, method = "multi-stage", decimal = TRUE, nomatch = NA)
-##'
-##' ### multi-stage process mapping ICD-10 to ICD-9
-##' icd_map(icd10codes, from = 10, to = 9,
-##'         method = "multi-stage", cache = FALSE)
-##' icd_map(icd10codes, from = 10, to = 9, method = "multi-stage",
-##'         decimal = TRUE, nomatch = NA, cache = FALSE)
+##' @example inst/examples/icd_map.R
 ##' @export
 icd_map <- function(dx, from = 9, to = 10, year = 2018,
                     method = c("gem", "reverse-gem", "both", "multi-stage"),
@@ -234,22 +217,33 @@ icd_map <- function(dx, from = 9, to = 10, year = 2018,
     ## replace empty strings with NA if nomath is NA
     if (is.na(nomatch))
         res <- empty2na(res)
+
     ## add decimal if needed
     if (decimal) {
-        res <- rcpp_strsplit(res)
-        if (to == 9) {
-            ## mapped from icd-10 to icd-9
-            res <- lapply(res, insert_dot, version = 9)
-        } else if (to == 10) {
-            ## mapped from icd-9 to icd-10
-            res <- lapply(res, insert_dot, version = 10)
-        } else {
-            ## not actually useful now but it makes clear for future
-            stop("Do not know how to insert dots. ",
-                 "Code version is not supported.")
-        }
+        res <- lapply(res, function(a) {
+            if (is.na(a) || a == "")
+                return(a)
+            reg_a <- gregexpr("[,|+]", a)
+            reg_match <- regmatches(a, reg_a)[[1L]]
+            a <- regmatches(a, reg_a, invert = TRUE)[[1L]]
+            a <- insert_dot(a, version = to)
+            len_out <- 2 * length(a) - 1L
+            if (len_out > 1L) {
+                out <- rep(NA_character_, len_out)
+                out[seq.int(1L, len_out, by = 2L)] <- a
+                out[seq.int(2L, len_out, by = 2L)] <- reg_match
+                out <- paste(out, sep = "", collapse = "")
+            } else {
+                out <- a
+            }
+            if (output != "character") {
+                rcpp_split_string(out)
+            } else {
+                out
+            }
+        })
         if (output == "character") {
-            res <- rcpp_strcat(res)
+            res <- do.call(c, res)
         } else if (output == "tidy-data") {
             col_names <- paste0("ICD-", c(from, to))
             res <- dx_list2tidy(res, x_names = dx, col_names = col_names)

@@ -52,14 +52,14 @@ for (i in seq_along(years)) {
 
     ## aggregate icd-10 codes for the same icd-9 code
     forward_agg_icd10 <-
-        forward_dat[, .(icd10_codes = aggregate_dx(icd10_codes)),
+        forward_dat[, .(icd10_codes = aggregate_dx(icd10_codes, flag)),
                     keyby = icd9_codes]
     forward_name <- sprintf("forward_map_%d", years[i])
     assign(forward_name, forward_agg_icd10)
 
     ## aggregate icd-9 codes for the same icd-10 code
     forward_agg_icd9 <-
-        forward_dat[, .(icd9_codes = aggregate_dx(icd9_codes)),
+        forward_dat[, .(icd9_codes = aggregate_dx(icd9_codes, flag)),
                     keyby = icd10_codes]
     reverse_forward_name <- sprintf("reverse_forward_map_%d", years[i])
     assign(reverse_forward_name, forward_agg_icd9)
@@ -76,14 +76,14 @@ for (i in seq_along(years)) {
 
     ## aggregate icd-9 codes for the same icd-10 code
     backward_agg_icd9 <-
-        backward_dat[, .(icd9_codes = aggregate_dx(icd9_codes)),
+        backward_dat[, .(icd9_codes = aggregate_dx(icd9_codes, flag)),
                      keyby = icd10_codes]
     backward_name <- sprintf("backward_map_%d", years[i])
     assign(backward_name, backward_agg_icd9)
 
     ## aggregate icd-10 codes for the same icd-9 code
     backward_agg_icd10 <-
-        backward_dat[, .(icd10_codes = aggregate_dx(icd10_codes)),
+        backward_dat[, .(icd10_codes = aggregate_dx(icd10_codes, flag)),
                      keyby = icd9_codes]
     reverse_backward_name <- sprintf("reverse_backward_map_%d", years[i])
     assign(reverse_backward_name, backward_agg_icd10)

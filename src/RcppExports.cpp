@@ -22,6 +22,17 @@
 
 using namespace Rcpp;
 
+// rcpp_split_string
+Rcpp::CharacterVector rcpp_split_string(const Rcpp::CharacterVector& x);
+RcppExport SEXP _touch_rcpp_split_string(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::CharacterVector& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_split_string(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_strsplit
 Rcpp::List rcpp_strsplit(const Rcpp::CharacterVector& x);
 RcppExport SEXP _touch_rcpp_strsplit(SEXP xSEXP) {
@@ -30,29 +41,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Rcpp::CharacterVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(rcpp_strsplit(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cat_dx
-std::string cat_dx(const std::vector<std::string>& x);
-RcppExport SEXP _touch_cat_dx(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(cat_dx(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cat_dx_pair
-std::vector<std::string> cat_dx_pair(const std::vector<std::string>& a, const std::vector<std::string>& b);
-RcppExport SEXP _touch_cat_dx_pair(SEXP aSEXP, SEXP bSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(cat_dx_pair(a, b));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -170,9 +158,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_touch_rcpp_split_string", (DL_FUNC) &_touch_rcpp_split_string, 1},
     {"_touch_rcpp_strsplit", (DL_FUNC) &_touch_rcpp_strsplit, 1},
-    {"_touch_cat_dx", (DL_FUNC) &_touch_cat_dx, 1},
-    {"_touch_cat_dx_pair", (DL_FUNC) &_touch_cat_dx_pair, 2},
     {"_touch_rcpp_strcat", (DL_FUNC) &_touch_rcpp_strcat, 1},
     {"_touch_rcpp_gem", (DL_FUNC) &_touch_rcpp_gem, 3},
     {"_touch_init_gem_f17", (DL_FUNC) &_touch_init_gem_f17, 2},
