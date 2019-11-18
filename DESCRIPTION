@@ -6,9 +6,9 @@ Authors@R: c(
     person(given = "Wenjie", family = "Wang", role = c("aut", "cre"),
            email = "wenjie.2.wang@uconn.edu",
            comment = c(ORCID = "0000-0003-0363-3180")),
-    person(given = "Yan", family = "Li", role = "aut",
-           comment = c(ORCID = "0000-0003-4401-7296")),
-    person(given = "Jun", family = "Yan", role = "aut")
+    person(given = "Yan", family = "Li", role = "aut"),
+    person(given = "Jun", family = "Yan", role = "aut",
+           comment = c(ORCID = "0000-0003-4401-7296"))
     )
 Description: R implementation of the software tools developed in the H-CUP
     (Healthcare Cost and Utilization Project) <https://www.hcup-us.ahrq.gov>
