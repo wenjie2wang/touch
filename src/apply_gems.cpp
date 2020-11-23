@@ -1,6 +1,6 @@
 //
 // R package touch by Wenjie Wang, Yan Li, and Jun Yan
-// Copyright (C) 2015-2019
+// Copyright (C) 2015-2020
 //
 // This file is part of the R package touch.
 //

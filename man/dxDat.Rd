@@ -4,7 +4,9 @@
 \name{dxDat}
 \alias{dxDat}
 \title{Sample Data of Diagnosis Code}
-\format{A data frame with 1000 rows and 11 variables.}
+\format{
+A data frame with 1000 rows and 11 variables.
+}
 \usage{
 data(dxDat)
 }
