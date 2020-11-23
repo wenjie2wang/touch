@@ -60,7 +60,7 @@ combine_rda <- function(in_file, ..., out_file)
         load(rda_list[[i]], rda_env)
     }
     save(list = ls(rda_env), file = out_file, envir = rda_env,
-         compress = TRUE, compression_level = 9, version = 2)
+         compress = "xz", compression_level = 9, version = 2)
 }
 
 
