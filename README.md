@@ -1,7 +1,7 @@
 # R Package touch
 
 [![CRAN_Status_Badge][cranVersion]][cran]
-[![Build Status][travis-master]][travis]
+[![Build Status][gha-icon]][gha-url]
 
 
 The package **touch** (**T**ools **o**f **u**nilization and **c**ost in
@@ -29,31 +29,20 @@ install.packages("touch")
 
 ## Development
 
-You may install the latest version under development with the help of
-**remotes** (or **devtools**) as follows:
+One may install the latest version under development as follows:
 
 ```R
 if (! require(remotes)) install.packages("remotes")
-remotes::install_github("wenjie2wang/touch")
-## or use devtools if it is installed
-## devtools::install_github("wenjie2wang/touch")
+remotes::install_github("wenjie2wang/touch", upgrade = "never")
 ```
-
 
 ## License
 
-The R package touch is free software: You can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation, either version 3 of the License, or any later version (at
-your option).  See the [GNU General Public License][gpl] for details.
-
-The R package touch is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.
+[GNU General Public License][gpl] (≥ 3)
 
 
 [cranVersion]: https://www.r-pkg.org/badges/version/touch
 [cran]: https://CRAN.R-project.org/package=touch
-[travis]: https://travis-ci.org/wenjie2wang/touch
-[travis-master]: https://travis-ci.org/wenjie2wang/touch.svg?branch=master
+[gha-icon]: https://github.com/wenjie2wang/touch/workflows/R-CMD-check/badge.svg
+[gha-url]: https://github.com/wenjie2wang/touch/actions
 [gpl]: https://www.gnu.org/licenses/

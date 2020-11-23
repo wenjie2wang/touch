@@ -1,10 +1,11 @@
 Package: touch
 Title: Tools of Utilization and Cost in Healthcare
-Version: 0.1-5
-Date: 2019-11-17
+Version: 0.1-6.9000
+Date: 2020-11-23
 Authors@R: c(
-    person(given = "Wenjie", family = "Wang", role = c("aut", "cre"),
-           email = "wenjie.2.wang@uconn.edu",
+    person(given = "Wenjie", family = "Wang",
+           role = c("aut", "cre"),
+           email = "wang@wwenjie.org",
            comment = c(ORCID = "0000-0003-0363-3180")),
     person(given = "Yan", family = "Li", role = "aut"),
     person(given = "Jun", family = "Yan", role = "aut",
