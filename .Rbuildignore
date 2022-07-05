@@ -15,6 +15,7 @@
 ^\.git$
 ^\.github$
 ^\.travis\.yml$
+^_pkgdown\.yml$
 ^docs$
 ^inst/ahrq/downloads$
 ^misc$
