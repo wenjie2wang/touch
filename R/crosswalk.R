@@ -121,13 +121,13 @@
 ##'
 ##' 2017-ICD-10-CM-and-GEMs.  The U.S. Centers for Medicare & Medicaid
 ##' Services. 22 August, 2016.
-##' \url{https://www.cms.gov/Medicare/Coding/ICD10/2017-ICD-10-CM-and-GEMs/}.
+##' \url{https://www.cms.gov/medicare/coding/icd10/2017-icd-10-cm-and-gems/}.
 ##' Accessed 5 July, 2022.
 ##'
 ##'
 ##' 2018-ICD-10-CM-and-GEMs.  The U.S. Centers for Medicare & Medicaid
 ##' Services. 11 August, 2017.
-##' \url{https://www.cms.gov/Medicare/Coding/ICD10/2018-ICD-10-CM-and-GEMs/}.
+##' \url{https://www.cms.gov/medicare/coding/icd10/2018-icd-10-cm-and-gems/}.
 ##' Accessed 5 July, 2022.
 ##'
 ##'
