@@ -1,8 +1,16 @@
+# touch 0.1-6
+
+## Minor changes
+
+* Fix ORCID comment and update redirected URLs.
+
+
 # touch 0.1-5
 
 ## Minor changes
 
 * Added indication for converting ICD codes with positive combination flags.
+
 
 # touch 0.1-4
 
@@ -12,6 +20,7 @@
   translating ICD-9 (resp. ICD-10) codes to ICD-10 (resp. ICD-9) codes based
   on the General Equivalence Mappings (GEM) from the Centers for Medicare and
   Medicaid Services (CMS).
+
 
 # touch 0.1-3
 
