@@ -1,8 +1,14 @@
+# touch 0.1-7
+
+* Removed unnecessary `C++11` specification from `SystemRequirements` in
+  DESCRIPTION.
+
+
 # touch 0.1-6
 
 ## Minor changes
 
-* Fix ORCID comment and update redirected URLs.
+* Fixed ORCID comment and update redirected URLs.
 
 
 # touch 0.1-5

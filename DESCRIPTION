@@ -1,6 +1,6 @@
 Package: touch
 Title: Tools of Utilization and Cost in Healthcare
-Version: 0.1-6
+Version: 0.1-7
 Authors@R: c(
     person(given = "Wenjie", family = "Wang",
            role = c("aut", "cre"),
@@ -27,7 +27,6 @@ Imports:
 License: GPL (>= 3)
 LazyData: yes
 SysDataCompression: xz
-SystemRequirements: C++11
 URL: https://github.com/wenjie2wang/touch
 BugReports: https://github.com/wenjie2wang/touch/issues
 Encoding: UTF-8
