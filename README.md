@@ -38,11 +38,10 @@ remotes::install_github("wenjie2wang/touch", upgrade = "never")
 
 ## License
 
-[GNU General Public License][gpl] (≥ 3)
+GNU General Public License (≥ 3)
 
 
 [cranVersion]: https://www.r-pkg.org/badges/version/touch
 [cran]: https://CRAN.R-project.org/package=touch
 [gha-icon]: https://github.com/wenjie2wang/touch/actions/workflows/R-CMD-check.yaml/badge.svg
 [gha-url]: https://github.com/wenjie2wang/touch/actions
-[gpl]: https://www.gnu.org/licenses/
