@@ -1,5 +1,7 @@
 # touch 0.1-7
 
+## Minor changes
+
 * Removed unnecessary `C++11` specification from `SystemRequirements` in
   DESCRIPTION.
 
