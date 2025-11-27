@@ -1,16 +1,13 @@
-citHeader("To cite touch in publications use:")
-
-citEntry(entry = "Manual",
-         Title = "{touch}: {T}ools of Utilization and Cost in Healthcare",
-         Author = personList(as.person("Wenjie Wang"),
-                             as.person("Yan Li"),
-                             as.person("Jun Yan")),
-         Note =	"{R} package version 0.1-7",
-         Year =	"2018",
-         Url = "https://CRAN.R-project.org/package=touch",
-
-         textVersion = paste("Wang, W., Li, Y., Yan, J. (2018). touch:",
-                             "Tools of Utilization and Cost in Healthcare.",
-                             "R package version 0.1-7",
-                             "https://CRAN.R-project.org/package=touch")
+bibentry(
+    key = "touch-package",
+    bibtype = "Manual",
+    title = "{touch}: {T}ools of Utilization and Cost in Healthcare",
+    author = c(
+        as.person("Wenjie Wang"),
+        as.person("Yan Li"),
+        as.person("Jun Yan")
+        ),
+    year = "2025",
+    url = "https://CRAN.R-project.org/package=touch",
+    note = "R package version 0.1-7"
 )
