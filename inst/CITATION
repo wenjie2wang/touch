@@ -5,12 +5,12 @@ citEntry(entry = "Manual",
          Author = personList(as.person("Wenjie Wang"),
                              as.person("Yan Li"),
                              as.person("Jun Yan")),
-         Note =	"{R} package version 0.1-6",
+         Note =	"{R} package version 0.1-7",
          Year =	"2018",
          Url = "https://CRAN.R-project.org/package=touch",
 
          textVersion = paste("Wang, W., Li, Y., Yan, J. (2018). touch:",
                              "Tools of Utilization and Cost in Healthcare.",
-                             "R package version 0.1-6",
+                             "R package version 0.1-7",
                              "https://CRAN.R-project.org/package=touch")
 )
